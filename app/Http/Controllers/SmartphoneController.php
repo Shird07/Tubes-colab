@@ -7,33 +7,70 @@ use Illuminate\Http\Request;
 
 class SmartphoneController extends Controller
 {
-    // MENAMPILKAN DATA
+    // MENAMPILKAN DATA (boleh admin & user)
     public function index()
     {
         $smartphones = Smartphone::all();
         return view('smartphones.index', compact('smartphones'));
     }
 
-    // MENAMPILKAN FORM TAMBAH
+    // FORM TAMBAH (ADMIN ONLY)
     public function create()
     {
         return view('smartphones.create');
     }
 
-    // MENYIMPAN DATA
+    // SIMPAN DATA (ADMIN ONLY)
     public function store(Request $request)
     {
         $request->validate([
-            'brand' => 'required',
-            'model' => 'required',
-            'ram' => 'required|integer',
-            'camera' => 'required|integer',
+            'name'    => 'required|string',
+            'brand'   => 'required|string',
+            'ram'     => 'required|integer',
+            'camera'  => 'required|integer',
             'battery' => 'required|integer',
-            'price' => 'required|integer',
+            'price'   => 'required|integer',
         ]);
 
         Smartphone::create($request->all());
 
-        return redirect()->route('smartphones.index');
+        return redirect()
+            ->route('smartphones.index')
+            ->with('success', 'Data smartphone berhasil ditambahkan');
+    }
+
+    // FORM EDIT (ADMIN ONLY)
+    public function edit(Smartphone $smartphone)
+    {
+        return view('smartphones.edit', compact('smartphone'));
+    }
+
+    // UPDATE (ADMIN ONLY)
+    public function update(Request $request, Smartphone $smartphone)
+    {
+        $request->validate([
+            'name'    => 'required|string',
+            'brand'   => 'required|string',
+            'ram'     => 'required|integer',
+            'camera'  => 'required|integer',
+            'battery' => 'required|integer',
+            'price'   => 'required|integer',
+        ]);
+
+        $smartphone->update($request->all());
+
+        return redirect()
+            ->route('smartphones.index')
+            ->with('success', 'Data berhasil diupdate');
+    }
+
+    // HAPUS (ADMIN ONLY)
+    public function destroy(Smartphone $smartphone)
+    {
+        $smartphone->delete();
+
+        return redirect()
+            ->route('smartphones.index')
+            ->with('success', 'Data berhasil dihapus');
     }
 }
