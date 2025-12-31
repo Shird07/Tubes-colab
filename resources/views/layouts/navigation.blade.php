@@ -110,5 +110,4 @@
         </div>
     </div>
 </nav>
-<!-- jangan lupa makan -->
- <!-- ilhan tot -->
+<!-- hali -->
