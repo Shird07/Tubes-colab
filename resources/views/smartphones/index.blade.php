@@ -11,12 +11,35 @@
 
                 <h3 class="text-lg font-bold mb-4">Daftar Smartphone</h3>
 
+                {{-- Tombol Tambah (ADMIN ONLY) --}}
                 @if(auth()->user()->role === 'admin')
                     <a href="{{ route('smartphones.create') }}"
                        class="inline-block mb-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded">
                         + Tambah Smartphone
                     </a>
                 @endif
+
+                {{-- SEARCH --}}
+                <form method="GET"
+                      action="{{ route('smartphones.index') }}"
+                      class="mb-4 flex flex-col md:flex-row gap-3">
+
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ request('search') }}"
+                        placeholder="Cari berdasarkan model atau brand..."
+                        class="w-full md:w-1/3 px-3 py-2 rounded
+                               bg-gray-700 text-white placeholder-gray-400
+                               border border-gray-600
+                               focus:outline-none focus:ring focus:ring-blue-500">
+
+                    <button
+                        type="submit"
+                        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded">
+                        Search
+                    </button>
+                </form>
 
                 <div class="overflow-x-auto">
                     <table class="w-full border border-gray-700 text-sm">
@@ -30,14 +53,25 @@
                                 <th class="p-2 border text-center">Aksi</th>
                             </tr>
                         </thead>
+
                         <tbody>
-                            @foreach ($smartphones as $phone)
+                            @forelse ($smartphones as $phone)
                                 <tr class="hover:bg-gray-700">
-                                    <td class="p-2 border">{{ $phone->model_name }}</td>
-                                    <td class="p-2 border">{{ $phone->company_name }}</td>
-                                    <td class="p-2 border">{{ $phone->ram }}</td>
-                                    <td class="p-2 border">{{ $phone->price_usa }}</td>
-                                    <td class="p-2 border">{{ $phone->launched_year }}</td>
+                                    <td class="p-2 border">
+                                        {{ $phone->model_name }}
+                                    </td>
+                                    <td class="p-2 border">
+                                        {{ $phone->company_name }}
+                                    </td>
+                                    <td class="p-2 border">
+                                        {{ $phone->ram }}
+                                    </td>
+                                    <td class="p-2 border">
+                                        {{ $phone->price_usa }}
+                                    </td>
+                                    <td class="p-2 border">
+                                        {{ $phone->launched_year }}
+                                    </td>
                                     <td class="p-2 border text-center">
                                         <button
                                             onclick="openDeleteModal({{ $phone->id }})"
@@ -46,7 +80,14 @@
                                         </button>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="6"
+                                        class="p-4 text-center text-gray-400">
+                                        Data smartphone tidak ditemukan.
+                                    </td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -55,17 +96,17 @@
         </div>
     </div>
 
-    {{-- MODAL HAPUS (DESAIN SEPERTI CONTOH) --}}
+    {{-- MODAL HAPUS --}}
     <div id="deleteModal" class="fixed inset-0 z-[9999] hidden">
 
         {{-- Backdrop --}}
         <div class="absolute inset-0 bg-black/70"
              onclick="closeDeleteModal()"></div>
 
-        {{-- Center Wrapper --}}
+        {{-- Wrapper --}}
         <div class="relative min-h-screen flex items-center justify-center px-4">
 
-            {{-- CARD MODAL --}}
+            {{-- Modal Box --}}
             <div id="modalBox"
                  class="bg-gray-800 rounded-2xl
                         w-[420px] max-w-[90vw]
@@ -78,7 +119,6 @@
                 <div class="flex justify-center mb-4">
                     <div class="w-12 h-12 flex items-center justify-center
                                 rounded-full bg-red-600/20 text-red-500">
-                        <!-- Trash Icon -->
                         <svg xmlns="http://www.w3.org/2000/svg"
                              class="h-6 w-6"
                              fill="none"
@@ -92,17 +132,14 @@
                     </div>
                 </div>
 
-                {{-- Title --}}
                 <h2 class="text-lg font-semibold text-center mb-2">
                     Hapus Data?
                 </h2>
 
-                {{-- Description --}}
-                <p class="text-sm text-center text-gray-300 mb-6 leading-relaxed">
+                <p class="text-sm text-center text-gray-300 mb-6">
                     Data ini akan dihapus secara permanen dan tidak dapat dikembalikan.
                 </p>
 
-                {{-- Actions --}}
                 <div class="flex justify-center gap-4">
                     <button
                         onclick="closeDeleteModal()"
@@ -127,7 +164,7 @@
         </div>
     </div>
 
-    {{-- Script --}}
+    {{-- SCRIPT --}}
     <script>
         function openDeleteModal(id) {
             const modal = document.getElementById('deleteModal');
