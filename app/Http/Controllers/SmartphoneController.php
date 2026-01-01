@@ -7,70 +7,116 @@ use Illuminate\Http\Request;
 
 class SmartphoneController extends Controller
 {
-    // MENAMPILKAN DATA (boleh admin & user)
-    public function index()
+    // TAMPILKAN DATA (ADMIN & USER + SEARCH)
+    public function index(Request $request)
     {
-        $smartphones = Smartphone::all();
+        $search = $request->search;
+
+        $smartphones = Smartphone::when($search, function ($query, $search) {
+            $query->where('model_name', 'LIKE', "%{$search}%")
+                ->orWhere('company_name', 'LIKE', "%{$search}%")
+                ->orWhere('processor', 'LIKE', "%{$search}%")
+                ->orWhere('ram', 'LIKE', "%{$search}%")
+                ->orWhere('price_usa', 'LIKE', "%{$search}%");
+        })->get();
+
         return view('smartphones.index', compact('smartphones'));
     }
 
-    // FORM TAMBAH (ADMIN ONLY)
+
+    // FORM TAMBAH (ADMIN)
     public function create()
     {
         return view('smartphones.create');
     }
 
-    // SIMPAN DATA (ADMIN ONLY)
+    // SIMPAN DATA (ADMIN)
     public function store(Request $request)
     {
         $request->validate([
-            'name'    => 'required|string',
-            'brand'   => 'required|string',
-            'ram'     => 'required|integer',
-            'camera'  => 'required|integer',
-            'battery' => 'required|integer',
-            'price'   => 'required|integer',
+            'company_name'     => 'required|string',
+            'model_name'       => 'required|string',
+            'mobile_weight'    => 'required|string',
+            'ram'              => 'required|string',
+            'front_camera'     => 'required|string',
+            'back_camera'      => 'required|string',
+            'processor'        => 'required|string',
+            'battery_capacity' => 'required|string',
+            'screen_size'      => 'required|string',
+            'price_usa'        => 'required|string',
+            'launched_year'    => 'required|integer',
         ]);
 
-        Smartphone::create($request->all());
+        Smartphone::create($request->only([
+            'company_name',
+            'model_name',
+            'mobile_weight',
+            'ram',
+            'front_camera',
+            'back_camera',
+            'processor',
+            'battery_capacity',
+            'screen_size',
+            'price_usa',
+            'launched_year',
+        ]));
 
         return redirect()
             ->route('smartphones.index')
             ->with('success', 'Data smartphone berhasil ditambahkan');
     }
 
-    // FORM EDIT (ADMIN ONLY)
+    // FORM EDIT (ADMIN)
     public function edit(Smartphone $smartphone)
     {
         return view('smartphones.edit', compact('smartphone'));
     }
 
-    // UPDATE (ADMIN ONLY)
+    // UPDATE DATA (ADMIN)
     public function update(Request $request, Smartphone $smartphone)
     {
         $request->validate([
-            'name'    => 'required|string',
-            'brand'   => 'required|string',
-            'ram'     => 'required|integer',
-            'camera'  => 'required|integer',
-            'battery' => 'required|integer',
-            'price'   => 'required|integer',
+            'company_name'     => 'required|string',
+            'model_name'       => 'required|string',
+            'mobile_weight'    => 'required|string',
+            'ram'              => 'required|string',
+            'front_camera'     => 'required|string',
+            'back_camera'      => 'required|string',
+            'processor'        => 'required|string',
+            'battery_capacity' => 'required|string',
+            'screen_size'      => 'required|string',
+            'price_usa'        => 'required|string',
+            'launched_year'    => 'required|integer',
         ]);
 
-        $smartphone->update($request->all());
+        $smartphone->update($request->only([
+            'company_name',
+            'model_name',
+            'mobile_weight',
+            'ram',
+            'front_camera',
+            'back_camera',
+            'processor',
+            'battery_capacity',
+            'screen_size',
+            'price_usa',
+            'launched_year',
+        ]));
 
         return redirect()
             ->route('smartphones.index')
-            ->with('success', 'Data berhasil diupdate');
+            ->with('success', 'Data smartphone berhasil diupdate');
     }
 
-    // HAPUS (ADMIN ONLY)
+    // HAPUS DATA (ADMIN)
     public function destroy(Smartphone $smartphone)
     {
         $smartphone->delete();
 
         return redirect()
             ->route('smartphones.index')
-            ->with('success', 'Data berhasil dihapus');
+            ->with('success', 'Data smartphone berhasil dihapus');
     }
 }
+
+// sayaaangggggg
