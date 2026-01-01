@@ -9,7 +9,10 @@ class Smartphone extends Model
 {
     use HasFactory;
 
-    protected $table = 'smartphones'; // pastikan nama tabel
+    protected $table = 'smartphones';
+
+    // ⛔ MATIKAN TIMESTAMPS
+    public $timestamps = false;
 
     protected $fillable = [
         'company_name',
