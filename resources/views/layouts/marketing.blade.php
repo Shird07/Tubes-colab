@@ -1,59 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <title>{{ $title ?? 'SmartRec' }}</title>
 
-    <title>SmartRec — Smartphone Recommendation</title>
-
-    {{-- CSS dari template --}}
-    <script src="https://cdn.tailwindcss.com"></script>
+    {{-- Tailwind --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="bg-slate-950 text-slate-100">
+<body class="bg-slate-950 text-white antialiased">
 
-    <!-- NAVBAR -->
-    <header class="border-b border-slate-800">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+<!-- NAVBAR -->
+<header class="px-8 py-6 flex items-center justify-between border-b border-white/10">
+    <div class="text-xl font-bold">SmartRec</div>
 
-            <div class="text-xl font-bold tracking-wide">
-                SmartRec
-            </div>
+    <nav class="flex gap-6 text-sm">
+        <a href="{{ route('home') }}">Home</a>
+        <a href="{{ route('rekomendasi') }}">Rekomendasi</a>
+        <a href="{{ route('dashboard') }}">Dashboard</a>
 
-            <nav class="flex items-center gap-6 text-sm">
-                <a href="{{ route('home') }}" class="hover:text-indigo-400">Home</a>
-                <a href="{{ route('rekomendasi') }}" class="hover:text-indigo-400">Rekomendasi</a>
-                <a href="{{ route('dashboard') }}" class="hover:text-indigo-400">Dashboard</a>
+        @auth
+            <span class="opacity-70">{{ auth()->user()->name }}</span>
+        @else
+            <a href="{{ route('login') }}" class="font-semibold">Login</a>
+        @endauth
+    </nav>
+</header>
 
-                @auth
-                    @if(auth()->user()->role === 'admin')
-                        <a href="{{ route('smartphones.index') }}"
-                           class="text-indigo-400 font-semibold">
-                            Admin
-                        </a>
-                    @endif
-
-                    <form method="POST" action="{{ route('logout') }}" class="inline">
-                        @csrf
-                        <button type="submit"
-                                class="ml-4 px-4 py-2 bg-slate-800 rounded hover:bg-slate-700">
-                            Logout
-                        </button>
-                    </form>
-                @else
-                    <a href="{{ route('login') }}"
-                       class="px-4 py-2 bg-indigo-600 rounded hover:bg-indigo-700">
-                        Login
-                    </a>
-                @endauth
-            </nav>
-        </div>
-    </header>
-
-    <!-- CONTENT -->
-    <main class="max-w-7xl mx-auto px-6 py-20">
-        @yield('content')
-    </main>
+<!-- CONTENT -->
+<main>
+    @yield('content')
+</main>
 
 </body>
 </html>
