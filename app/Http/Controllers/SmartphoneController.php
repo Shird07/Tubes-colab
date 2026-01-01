@@ -7,12 +7,22 @@ use Illuminate\Http\Request;
 
 class SmartphoneController extends Controller
 {
-    // TAMPILKAN DATA (ADMIN & USER)
-    public function index()
+    // TAMPILKAN DATA (ADMIN & USER + SEARCH)
+    public function index(Request $request)
     {
-        $smartphones = Smartphone::all();
+        $search = $request->search;
+
+        $smartphones = Smartphone::when($search, function ($query, $search) {
+            $query->where('model_name', 'LIKE', "%{$search}%")
+                ->orWhere('company_name', 'LIKE', "%{$search}%")
+                ->orWhere('processor', 'LIKE', "%{$search}%")
+                ->orWhere('ram', 'LIKE', "%{$search}%")
+                ->orWhere('price_usa', 'LIKE', "%{$search}%");
+        })->get();
+
         return view('smartphones.index', compact('smartphones'));
     }
+
 
     // FORM TAMBAH (ADMIN)
     public function create()
