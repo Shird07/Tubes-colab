@@ -118,3 +118,5 @@ class SmartphoneController extends Controller
             ->with('success', 'Data smartphone berhasil dihapus');
     }
 }
+
+// sayaaangggggg
