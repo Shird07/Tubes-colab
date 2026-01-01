@@ -1,5 +1,3 @@
-<h1 class="text-red-500 text-5xl">TEST TAILWIND</h1>
-
 @extends('layouts.marketing')
 
 @section('content')
