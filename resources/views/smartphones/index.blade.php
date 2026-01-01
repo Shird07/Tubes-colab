@@ -9,7 +9,9 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-gray-800 text-white p-6 rounded-lg">
 
-                <h3 class="text-lg font-bold mb-4">Daftar Smartphone</h3>
+                <h3 class="text-lg font-bold mb-4">
+                    Daftar Smartphone
+                </h3>
 
                 {{-- Tombol Tambah (ADMIN ONLY) --}}
                 @if(auth()->user()->role === 'admin')
@@ -19,16 +21,30 @@
                     </a>
                 @endif
 
+
+                {{-- SEARCH (REALTIME + BUTTON) --}}
+                <form method="GET"
+                      action="{{ route('smartphones.index') }}"
+                      class="mb-4 flex flex-col md:flex-row gap-3"
+                      id="searchForm">
+
                 {{-- SEARCH --}}
                 <form method="GET"
                       action="{{ route('smartphones.index') }}"
                       class="mb-4 flex flex-col md:flex-row gap-3">
 
+
                     <input
                         type="text"
                         name="search"
+
+                        id="searchInput"
+                        value="{{ request('search') }}"
+                        placeholder="Cari berdasarkan model, brand, RAM, processor..."
+
                         value="{{ request('search') }}"
                         placeholder="Cari berdasarkan model atau brand..."
+
                         class="w-full md:w-1/3 px-3 py-2 rounded
                                bg-gray-700 text-white placeholder-gray-400
                                border border-gray-600
@@ -82,8 +98,12 @@
                                 </tr>
                             @empty
                                 <tr>
+
+                                    <td colspan="6" class="p-4 text-center text-gray-400">
+
                                     <td colspan="6"
                                         class="p-4 text-center text-gray-400">
+
                                         Data smartphone tidak ditemukan.
                                     </td>
                                 </tr>
@@ -99,14 +119,17 @@
     {{-- MODAL HAPUS --}}
     <div id="deleteModal" class="fixed inset-0 z-[9999] hidden">
 
-        {{-- Backdrop --}}
         <div class="absolute inset-0 bg-black/70"
              onclick="closeDeleteModal()"></div>
 
+
+        <div class="relative min-h-screen flex items-center justify-center px-4">
+\
         {{-- Wrapper --}}
         <div class="relative min-h-screen flex items-center justify-center px-4">
 
             {{-- Modal Box --}}
+
             <div id="modalBox"
                  class="bg-gray-800 rounded-2xl
                         w-[420px] max-w-[90vw]
@@ -115,7 +138,6 @@
                         transform scale-95 opacity-0
                         transition-all duration-200">
 
-                {{-- Icon --}}
                 <div class="flex justify-center mb-4">
                     <div class="w-12 h-12 flex items-center justify-center
                                 rounded-full bg-red-600/20 text-red-500">
@@ -143,8 +165,7 @@
                 <div class="flex justify-center gap-4">
                     <button
                         onclick="closeDeleteModal()"
-                        class="px-5 py-2 rounded-lg
-                               bg-gray-600 hover:bg-gray-700">
+                        class="px-5 py-2 rounded-lg bg-gray-600 hover:bg-gray-700">
                         Batal
                     </button>
 
@@ -153,8 +174,7 @@
                         @method('DELETE')
                         <button
                             type="submit"
-                            class="px-5 py-2 rounded-lg
-                                   bg-red-600 hover:bg-red-700">
+                            class="px-5 py-2 rounded-lg bg-red-600 hover:bg-red-700">
                             Ya, Hapus
                         </button>
                     </form>
@@ -166,6 +186,7 @@
 
     {{-- SCRIPT --}}
     <script>
+        // ===== MODAL HAPUS =====
         function openDeleteModal(id) {
             const modal = document.getElementById('deleteModal');
             const box = document.getElementById('modalBox');
@@ -191,5 +212,20 @@
                 modal.classList.add('hidden');
             }, 200);
         }
+
+        // ===== SEARCH REALTIME + BUTTON =====
+        const searchInput = document.getElementById('searchInput');
+        const searchForm  = document.getElementById('searchForm');
+
+        let typingTimer;
+        const debounceDelay = 400;
+
+        searchInput.addEventListener('input', function () {
+            clearTimeout(typingTimer);
+
+            typingTimer = setTimeout(() => {
+                searchForm.submit();
+            }, debounceDelay);
+        });
     </script>
 </x-app-layout>
