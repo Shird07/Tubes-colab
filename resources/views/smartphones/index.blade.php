@@ -21,18 +21,30 @@
                     </a>
                 @endif
 
+
                 {{-- SEARCH (REALTIME + BUTTON) --}}
                 <form method="GET"
                       action="{{ route('smartphones.index') }}"
                       class="mb-4 flex flex-col md:flex-row gap-3"
                       id="searchForm">
 
+                {{-- SEARCH --}}
+                <form method="GET"
+                      action="{{ route('smartphones.index') }}"
+                      class="mb-4 flex flex-col md:flex-row gap-3">
+
+
                     <input
                         type="text"
                         name="search"
+
                         id="searchInput"
                         value="{{ request('search') }}"
                         placeholder="Cari berdasarkan model, brand, RAM, processor..."
+
+                        value="{{ request('search') }}"
+                        placeholder="Cari berdasarkan model atau brand..."
+
                         class="w-full md:w-1/3 px-3 py-2 rounded
                                bg-gray-700 text-white placeholder-gray-400
                                border border-gray-600
@@ -61,11 +73,21 @@
                         <tbody>
                             @forelse ($smartphones as $phone)
                                 <tr class="hover:bg-gray-700">
-                                    <td class="p-2 border">{{ $phone->model_name }}</td>
-                                    <td class="p-2 border">{{ $phone->company_name }}</td>
-                                    <td class="p-2 border">{{ $phone->ram }}</td>
-                                    <td class="p-2 border">{{ $phone->price_usa }}</td>
-                                    <td class="p-2 border">{{ $phone->launched_year }}</td>
+                                    <td class="p-2 border">
+                                        {{ $phone->model_name }}
+                                    </td>
+                                    <td class="p-2 border">
+                                        {{ $phone->company_name }}
+                                    </td>
+                                    <td class="p-2 border">
+                                        {{ $phone->ram }}
+                                    </td>
+                                    <td class="p-2 border">
+                                        {{ $phone->price_usa }}
+                                    </td>
+                                    <td class="p-2 border">
+                                        {{ $phone->launched_year }}
+                                    </td>
                                     <td class="p-2 border text-center">
                                         <button
                                             onclick="openDeleteModal({{ $phone->id }})"
@@ -76,7 +98,12 @@
                                 </tr>
                             @empty
                                 <tr>
+
                                     <td colspan="6" class="p-4 text-center text-gray-400">
+
+                                    <td colspan="6"
+                                        class="p-4 text-center text-gray-400">
+
                                         Data smartphone tidak ditemukan.
                                     </td>
                                 </tr>
@@ -95,7 +122,14 @@
         <div class="absolute inset-0 bg-black/70"
              onclick="closeDeleteModal()"></div>
 
+
         <div class="relative min-h-screen flex items-center justify-center px-4">
+\
+        {{-- Wrapper --}}
+        <div class="relative min-h-screen flex items-center justify-center px-4">
+
+            {{-- Modal Box --}}
+
             <div id="modalBox"
                  class="bg-gray-800 rounded-2xl
                         w-[420px] max-w-[90vw]
