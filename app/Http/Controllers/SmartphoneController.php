@@ -7,30 +7,37 @@ use Illuminate\Http\Request;
 
 class SmartphoneController extends Controller
 {
+    // ===============================
     // TAMPILKAN DATA (ADMIN & USER + SEARCH)
+    // ===============================
     public function index(Request $request)
     {
         $search = $request->search;
 
         $smartphones = Smartphone::when($search, function ($query, $search) {
-            $query->where('model_name', 'LIKE', "%{$search}%")
-                ->orWhere('company_name', 'LIKE', "%{$search}%")
-                ->orWhere('processor', 'LIKE', "%{$search}%")
-                ->orWhere('ram', 'LIKE', "%{$search}%")
-                ->orWhere('price_usa', 'LIKE', "%{$search}%");
+            $query->where(function ($q) use ($search) {
+                $q->where('model_name', 'LIKE', "%{$search}%")
+                  ->orWhere('company_name', 'LIKE', "%{$search}%")
+                  ->orWhere('processor', 'LIKE', "%{$search}%")
+                  ->orWhere('ram', 'LIKE', "%{$search}%")
+                  ->orWhere('price_usa', 'LIKE', "%{$search}%");
+            });
         })->get();
 
         return view('smartphones.index', compact('smartphones'));
     }
 
-
-    // FORM TAMBAH (ADMIN)
+    // ===============================
+    // FORM TAMBAH DATA (ADMIN)
+    // ===============================
     public function create()
     {
         return view('smartphones.create');
     }
 
+    // ===============================
     // SIMPAN DATA (ADMIN)
+    // ===============================
     public function store(Request $request)
     {
         $request->validate([
@@ -66,13 +73,17 @@ class SmartphoneController extends Controller
             ->with('success', 'Data smartphone berhasil ditambahkan');
     }
 
-    // FORM EDIT (ADMIN)
+    // ===============================
+    // FORM EDIT DATA (ADMIN)
+    // ===============================
     public function edit(Smartphone $smartphone)
     {
         return view('smartphones.edit', compact('smartphone'));
     }
 
+    // ===============================
     // UPDATE DATA (ADMIN)
+    // ===============================
     public function update(Request $request, Smartphone $smartphone)
     {
         $request->validate([
@@ -108,7 +119,9 @@ class SmartphoneController extends Controller
             ->with('success', 'Data smartphone berhasil diupdate');
     }
 
+    // ===============================
     // HAPUS DATA (ADMIN)
+    // ===============================
     public function destroy(Smartphone $smartphone)
     {
         $smartphone->delete();
@@ -118,5 +131,3 @@ class SmartphoneController extends Controller
             ->with('success', 'Data smartphone berhasil dihapus');
     }
 }
-
-// sayaaangggggg
