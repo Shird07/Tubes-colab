@@ -11,7 +11,7 @@ class Smartphone extends Model
 
     protected $table = 'smartphones';
 
-    // ⛔ MATIKAN TIMESTAMPS
+    // Nonaktifkan kolom created_at & updated_at
     public $timestamps = false;
 
     protected $fillable = [
