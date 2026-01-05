@@ -26,10 +26,13 @@ Route::get('/about', function () {
 */
 Route::middleware(['auth'])->group(function () {
 
-    // ===== SISTEM REKOMENDASI (WIZARD) =====
-    Route::get('/rekomendasi', function () {
-        return view('rekomendasi.wizard');
-    })->name('rekomendasi');
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
+
+    // ===== SISTEM REKOMENDASI =====
+    Route::get('/rekomendasi', function () {return view('rekomendasi.wizard');})
+        ->name('rekomendasi');
 
     Route::post('/rekomendasi/hasil', [RekomendasiController::class, 'proses'])
         ->name('rekomendasi.proses');
@@ -75,6 +78,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/smartphones/{smartphone}', [SmartphoneController::class, 'destroy'])
         ->name('smartphones.destroy');
 
+    // Debug admin
     Route::get('/cek-admin', function () {
         return 'ADMIN OK';
     });
