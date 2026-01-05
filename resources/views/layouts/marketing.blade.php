@@ -1,59 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <title>{{ $title ?? 'SmartRec' }}</title>
 
-    <title>SmartRec — Smartphone Recommendation</title>
-
-    {{-- CSS dari template --}}
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="bg-slate-950 text-slate-100">
+<body class="bg-slate-950 text-white antialiased">
 
-    <!-- NAVBAR -->
-    <header class="border-b border-slate-800">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+<!-- ================= NAVBAR ================= -->
+<header class="px-8 py-6 flex items-center justify-between border-b border-white/10">
 
-            <div class="text-xl font-bold tracking-wide">
-                SmartRec
-            </div>
+    {{-- LOGO (PNG) --}}
+    <a href="{{ route('home') }}" class="flex items-center gap-3">
+        <img
+            src="{{ asset('img/SmartRec-Logo.png') }}"
+            alt="SmartRec Logo"
+            style="height:140px; width:auto;"
+        >
+    </a>
 
-            <nav class="flex items-center gap-6 text-sm">
-                <a href="{{ route('home') }}" class="hover:text-indigo-400">Home</a>
-                <a href="{{ route('rekomendasi') }}" class="hover:text-indigo-400">Rekomendasi</a>
-                <a href="{{ route('dashboard') }}" class="hover:text-indigo-400">Dashboard</a>
+    {{-- NAVIGATION --}}
+    <nav class="flex gap-7 text-xl items-center">
 
-                @auth
-                    @if(auth()->user()->role === 'admin')
-                        <a href="{{ route('smartphones.index') }}"
-                           class="text-indigo-400 font-semibold">
-                            Admin
-                        </a>
-                    @endif
+        {{-- HOME --}}
+        <a href="{{ route('home') }}" class="hover:text-blue-400">
+            Home
+        </a>
 
-                    <form method="POST" action="{{ route('logout') }}" class="inline">
-                        @csrf
-                        <button type="submit"
-                                class="ml-4 px-4 py-2 bg-slate-800 rounded hover:bg-slate-700">
-                            Logout
-                        </button>
-                    </form>
-                @else
-                    <a href="{{ route('login') }}"
-                       class="px-4 py-2 bg-indigo-600 rounded hover:bg-indigo-700">
-                        Login
-                    </a>
-                @endauth
-            </nav>
-        </div>
-    </header>
+        {{-- AUTHENTICATED USER --}}
+        @auth
+            <a href="{{ route('rekomendasi') }}" class="hover:text-blue-400">
+                Rekomendasi
+            </a>
 
-    <!-- CONTENT -->
-    <main class="max-w-7xl mx-auto px-6 py-20">
-        @yield('content')
-    </main>
+            @if(auth()->user()->role === 'admin')
+                <a href="{{ route('dashboard') }}" class="hover:text-blue-400">
+                    Dashboard
+                </a>
+            @endif
+
+            <span class="opacity-70">
+                {{ auth()->user()->name }}
+            </span>
+
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button class="hover:text-red-400">
+                    Logout
+                </button>
+            </form>
+        @endauth
+
+        {{-- GUEST --}}
+        @guest
+            <a href="{{ route('login') }}" class="hover:text-blue-400">
+                Login
+            </a>
+
+            <a href="{{ route('register') }}"
+               class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-white">
+                Register
+            </a>
+        @endguest
+
+    </nav>
+</header>
+<!-- ================= END NAVBAR ================= -->
+
+<!-- CONTENT -->
+<main>
+    @yield('content')
+</main>
 
 </body>
 </html>

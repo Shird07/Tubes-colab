@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SmartphoneController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\RekomendasiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -11,34 +12,54 @@ use App\Http\Controllers\DashboardController;
 |--------------------------------------------------------------------------
 */
 Route::get('/', function () {
-    return view('home'); // landing page / marketing
+    return view('home');
 })->name('home');
 
 Route::get('/about', function () {
     return view('about');
-});
+})->name('about');
 
 /*
 |--------------------------------------------------------------------------
-| AUTH REQUIRED (USER & ADMIN)
+| AUTHENTICATED USER (USER & ADMIN)
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth'])->group(function () {
 
-    // Sistem rekomendasi (harus login)
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
+
+    // ===== SISTEM REKOMENDASI =====
+    Route::get('/rekomendasi', function () {return view('rekomendasi.wizard');})
+        ->name('rekomendasi');
+
+    Route::post('/rekomendasi/hasil', [RekomendasiController::class, 'proses'])
+        ->name('rekomendasi.proses');
+    // ===== DASHBOARD =====
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
+
+    // ===== SMARTPHONE (READ ONLY) =====
+    Route::get('/smartphones', [SmartphoneController::class, 'index'])
+        ->name('smartphones.index');
+
+    // ===== PROFILE =====
+
+    // Sistem Rekomendasi
     Route::get('/rekomendasi', function () {
         return view('rekomendasi');
     })->name('rekomendasi');
 
-    // Dashboard visualisasi
-    Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->name('dashboard');
-
-    // Smartphone (READ ONLY)
+    // Smartphone (READ)
     Route::get('/smartphones', [SmartphoneController::class, 'index'])
         ->name('smartphones.index');
 
-    // Profile
+    /*
+    |--------------------------------------------------------------------------
+    | PROFILE
+    |--------------------------------------------------------------------------
+    */
     Route::get('/profile', [ProfileController::class, 'edit'])
         ->name('profile.edit');
 
@@ -49,6 +70,7 @@ Route::middleware('auth')->group(function () {
         ->name('profile.destroy');
 });
 
+
 /*
 |--------------------------------------------------------------------------
 | ADMIN ONLY
@@ -56,25 +78,33 @@ Route::middleware('auth')->group(function () {
 */
 Route::middleware(['auth', 'admin'])->group(function () {
 
+    // Create
     Route::get('/smartphones/create', [SmartphoneController::class, 'create'])
         ->name('smartphones.create');
 
     Route::post('/smartphones', [SmartphoneController::class, 'store'])
         ->name('smartphones.store');
 
+    // Edit
     Route::get('/smartphones/{smartphone}/edit', [SmartphoneController::class, 'edit'])
         ->name('smartphones.edit');
 
     Route::put('/smartphones/{smartphone}', [SmartphoneController::class, 'update'])
         ->name('smartphones.update');
 
+    // Delete
     Route::delete('/smartphones/{smartphone}', [SmartphoneController::class, 'destroy'])
         ->name('smartphones.destroy');
 
-    // test admin
+    // Debug admin
     Route::get('/cek-admin', function () {
         return 'ADMIN OK';
     });
 });
 
-require __DIR__.'/auth.php';
+/*
+|--------------------------------------------------------------------------
+| AUTH (LARAVEL BREEZE)
+|--------------------------------------------------------------------------
+*/
+require __DIR__ . '/auth.php';
