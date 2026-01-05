@@ -3,19 +3,166 @@
 namespace App\Http\Controllers;
 
 use App\Models\Smartphone;
-use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-   public function index()
-{
-    $totalSmartphone = Smartphone::count();
-    $totalUser = User::count();
+    public function index()
+        {
+            $totalSmartphone = Smartphone::count();
 
-    return view('dashboard', compact(
-        'totalSmartphone',
-        'totalUser'
-    ));
-}
+            // 🔥 TOTAL BRAND (UNIK)
+            $totalBrand = Smartphone::select('company_name')->distinct()->count();
 
+            // DATA CHART AWAL
+            $brandData = Smartphone::select('company_name', DB::raw('COUNT(*) as total'))
+                ->groupBy('company_name')
+                ->orderBy('total', 'desc')
+                ->get();
+
+            $brands = Smartphone::select('company_name')
+                ->distinct()
+                ->orderBy('company_name')
+                ->pluck('company_name');
+
+            $years = Smartphone::select('launched_year')
+                ->distinct()
+                ->orderBy('launched_year')
+                ->pluck('launched_year');
+
+            return view('dashboard', [
+                'totalSmartphone' => $totalSmartphone,
+                'totalBrand'      => $totalBrand, // 🔥
+                'brandsChart'     => $brandData->pluck('company_name'),
+                'brandTotals'     => $brandData->pluck('total'),
+                'brands'          => $brands,
+                'years'           => $years,
+            ]);
+        }
+
+
+    // ================= FILTER (AJAX | SEMUA VISUALISASI) =================
+    public function filter(Request $request)
+    {
+        $baseQuery = Smartphone::query();
+
+        // 🔥 MULTI BRAND
+        if ($request->filled('brands')) {
+            $baseQuery->whereIn('company_name', $request->brands);
+        }
+
+        // 🔥 FILTER TAHUN
+        if ($request->filled('year')) {
+            $baseQuery->where('launched_year', $request->year);
+        }
+
+        // 1️⃣ Jumlah Smartphone per Brand
+        $perBrand = (clone $baseQuery)
+            ->select('company_name', DB::raw('COUNT(*) as total'))
+            ->groupBy('company_name')
+            ->orderBy('total', 'desc')
+            ->get();
+
+        // 2️⃣ Jumlah Smartphone per Tahun
+        $perYear = (clone $baseQuery)
+            ->select('launched_year', DB::raw('COUNT(*) as total'))
+            ->groupBy('launched_year')
+            ->orderBy('launched_year')
+            ->get();
+
+        // 3️⃣ Distribusi Harga Smartphone
+        $priceDistribution = (clone $baseQuery)
+            ->selectRaw("
+                CASE
+                    WHEN CAST(REPLACE(price_usa,'USD ','') AS UNSIGNED) < 200 THEN '< 200'
+                    WHEN CAST(REPLACE(price_usa,'USD ','') AS UNSIGNED) BETWEEN 200 AND 399 THEN '200 - 399'
+                    WHEN CAST(REPLACE(price_usa,'USD ','') AS UNSIGNED) BETWEEN 400 AND 699 THEN '400 - 699'
+                    ELSE '>= 700'
+                END as range_price,
+                COUNT(*) as total
+            ")
+            ->groupBy('range_price')
+            ->get();
+
+        // 4️⃣ Rata-rata Harga per Brand
+        $avgPricePerBrand = (clone $baseQuery)
+            ->select(
+                'company_name',
+                DB::raw('AVG(CAST(REPLACE(price_usa,"USD ","") AS UNSIGNED)) as avg_price')
+            )
+            ->groupBy('company_name')
+            ->get();
+
+        // 5️⃣ RAM vs Harga
+        $ramVsPrice = (clone $baseQuery)
+            ->select(
+                DB::raw('CAST(REPLACE(ram,"GB","") AS UNSIGNED) as ram'),
+                DB::raw('CAST(REPLACE(price_usa,"USD ","") AS UNSIGNED) as price')
+            )
+            ->whereNotNull('ram')
+            ->whereNotNull('price_usa')
+            ->get();
+
+        // 6️⃣ Rata-rata Baterai per Brand
+        $avgBattery = (clone $baseQuery)
+            ->select(
+                'company_name',
+                DB::raw('AVG(CAST(REPLACE(battery_capacity,"mAh","") AS UNSIGNED)) as avg_battery')
+            )
+            ->groupBy('company_name')
+            ->get();
+
+        // 7️⃣ Ukuran Layar vs Tahun Rilis
+        $screenTrend = (clone $baseQuery)
+            ->select(
+                'launched_year',
+                DB::raw('AVG(CAST(screen_size AS DECIMAL(4,2))) as avg_screen')
+            )
+            ->groupBy('launched_year')
+            ->orderBy('launched_year')
+            ->get();
+
+        // 8️⃣ Processor Usage
+        $processorUsage = (clone $baseQuery)
+            ->select('processor', DB::raw('COUNT(*) as total'))
+            ->groupBy('processor')
+            ->orderBy('total', 'desc')
+            ->limit(10)
+            ->get();
+
+        // 9️⃣ Kamera Belakang Dominan
+        $cameraUsage = (clone $baseQuery)
+            ->select('back_camera', DB::raw('COUNT(*) as total'))
+            ->groupBy('back_camera')
+            ->orderBy('total', 'desc')
+            ->limit(10)
+            ->get();
+
+        // 🔟 Flagship vs Non-Flagship
+        $flagshipCompare = (clone $baseQuery)
+            ->selectRaw("
+                CASE
+                    WHEN CAST(REPLACE(price_usa,'USD ','') AS UNSIGNED) >= 700
+                        THEN 'Flagship'
+                    ELSE 'Non-Flagship'
+                END as category,
+                COUNT(*) as total
+            ")
+            ->groupBy('category')
+            ->get();
+
+        return response()->json([
+            'perBrand'          => $perBrand,
+            'perYear'           => $perYear,
+            'priceDistribution' => $priceDistribution,
+            'avgPricePerBrand'  => $avgPricePerBrand,
+            'ramVsPrice'        => $ramVsPrice,
+            'avgBattery'        => $avgBattery,
+            'screenTrend'       => $screenTrend,
+            'processorUsage'    => $processorUsage,
+            'cameraUsage'       => $cameraUsage,
+            'flagshipCompare'   => $flagshipCompare,
+        ]);
+    }
 }

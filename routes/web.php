@@ -11,7 +11,7 @@ use App\Http\Controllers\DashboardController;
 |--------------------------------------------------------------------------
 */
 Route::get('/', function () {
-    return view('home'); // landing page / marketing
+    return view('home');
 })->name('home');
 
 Route::get('/about', function () {
@@ -25,16 +25,20 @@ Route::get('/about', function () {
 */
 Route::middleware('auth')->group(function () {
 
-    // Sistem rekomendasi (harus login)
+    // Sistem rekomendasi
     Route::get('/rekomendasi', function () {
         return view('rekomendasi');
     })->name('rekomendasi');
 
-    // Dashboard visualisasi
+    // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 
-    // Smartphone (READ ONLY)
+    // 🔥 ROUTE FILTER DASHBOARD (WAJIB UNTUK VISUALISASI)
+    Route::get('/dashboard/filter', [DashboardController::class, 'filter'])
+        ->name('dashboard.filter');
+
+    // Smartphone (READ)
     Route::get('/smartphones', [SmartphoneController::class, 'index'])
         ->name('smartphones.index');
 
@@ -71,7 +75,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/smartphones/{smartphone}', [SmartphoneController::class, 'destroy'])
         ->name('smartphones.destroy');
 
-    // test admin
     Route::get('/cek-admin', function () {
         return 'ADMIN OK';
     });
