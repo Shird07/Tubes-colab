@@ -1,28 +1,36 @@
-@extends('layouts.marketing')
+<x-app-layout>
+<div class="p-6 max-w-4xl mx-auto">
+<h1 class="text-2xl font-bold mb-4">Sistem Rekomendasi Smartphone</h1>
 
-@section('content')
-<section class="relative overflow-hidden px-8 py-24 max-w-7xl mx-auto">
+<form method="POST" action="{{ route('rekomendasi.proses') }}" class="space-y-3">
+@csrf
 
-    <h1 class="text-5xl font-bold leading-tight mb-6">
-        Sistem Rekomendasi Smartphone
-    </h1>
+<input type="number" name="budget" placeholder="Budget maksimum" required>
 
-    <p class="text-lg text-slate-300 max-w-2xl mb-10">
-        Platform berbasis sistem pakar untuk membantu pengguna memilih smartphone terbaik
-        berdasarkan <b>budget</b>, <b>kamera</b>, dan <b>baterai</b>.
-    </p>
+<input type="text" name="brand" placeholder="Brand (opsional)">
 
-    <div class="flex gap-4">
-        <a href="{{ route('rekomendasi') }}"
-           class="px-6 py-3 rounded bg-indigo-600 hover:bg-indigo-500 transition">
-            Mulai Rekomendasi
-        </a>
+<input type="number" name="camera" placeholder="Minimal Kamera (MP)">
+<input type="number" name="ram" placeholder="Minimal RAM (GB)">
+<input type="number" name="battery" placeholder="Minimal Baterai (mAh)">
 
-        <a href="{{ route('login') }}"
-           class="px-6 py-3 rounded border border-white/20 hover:bg-white/10 transition">
-            Login
-        </a>
-    </div>
+<select name="processor[]" multiple>
+<option value="Snapdragon">Snapdragon</option>
+<option value="MediaTek">MediaTek</option>
+<option value="Apple">Apple</option>
+</select>
 
-</section>
-@endsection
+<hr>
+
+<label>Bobot Kamera</label>
+<select name="weight_camera">@for($i=1;$i<=5;$i++)<option>{{ $i }}</option>@endfor</select>
+
+<label>Bobot RAM</label>
+<select name="weight_ram">@for($i=1;$i<=5;$i++)<option>{{ $i }}</option>@endfor</select>
+
+<label>Bobot Baterai</label>
+<select name="weight_battery">@for($i=1;$i<=5;$i++)<option>{{ $i }}</option>@endfor</select>
+
+<button type="submit">Proses Rekomendasi</button>
+</form>
+</div>
+</x-app-layout>
