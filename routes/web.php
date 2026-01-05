@@ -26,20 +26,21 @@ Route::get('/about', function () {
 */
 Route::middleware(['auth'])->group(function () {
 
-    // Dashboard
+    // ===== DASHBOARD (HANYA 1 KALI) =====
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 
+    // 🔥 TAMBAHKAN ROUTE FILTER DI SINI
+    Route::get('/dashboard/filter', [DashboardController::class, 'filter'])
+        ->name('dashboard.filter');
+
     // ===== SISTEM REKOMENDASI =====
-    Route::get('/rekomendasi', function () {return view('rekomendasi.wizard');})
-        ->name('rekomendasi');
+    Route::get('/rekomendasi', function () {
+        return view('rekomendasi.wizard');
+    })->name('rekomendasi');
 
     Route::post('/rekomendasi/hasil', [RekomendasiController::class, 'proses'])
         ->name('rekomendasi.proses');
-
-    // ===== DASHBOARD =====
-    Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->name('dashboard');
 
     // ===== SMARTPHONE (READ ONLY) =====
     Route::get('/smartphones', [SmartphoneController::class, 'index'])
@@ -90,3 +91,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
 |--------------------------------------------------------------------------
 */
 require __DIR__ . '/auth.php';
+
+
+// baby
