@@ -7,7 +7,6 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
@@ -15,7 +14,7 @@ use Illuminate\View\View;
 class RegisteredUserController extends Controller
 {
     /**
-     * Display the registration view.
+     * Menampilkan halaman registrasi
      */
     public function create(): View
     {
@@ -23,28 +22,45 @@ class RegisteredUserController extends Controller
     }
 
     /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
+     * Menyimpan data registrasi user
+     * TANPA login otomatis
      */
     public function store(Request $request): RedirectResponse
     {
+        // Validasi input (TANPA lowercase)
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                'unique:users,email',
+            ],
+            'password' => [
+                'required',
+                'confirmed',
+                Rules\Password::defaults(),
+            ],
         ]);
 
+        // Simpan user ke database (email dipaksa lowercase)
         $user = User::create([
             'name' => $request->name,
-            'email' => $request->email,
+            'email' => strtolower($request->email),
             'password' => Hash::make($request->password),
+            'role' => 'user',
         ]);
 
+        // Event register (opsional, tetap aman)
         event(new Registered($user));
 
-        Auth::login($user);
+        // ❌ TIDAK LOGIN
+        // ❌ TIDAK MASUK AKUN
 
-        return redirect(route('dashboard', absolute: false));
+        // Redirect + popup sukses
+        return redirect()
+            ->route('home')
+            ->with('success', 'Akun berhasil dibuat. Silakan login.');
     }
 }

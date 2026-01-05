@@ -12,26 +12,28 @@ use App\Http\Controllers\RekomendasiController;
 |--------------------------------------------------------------------------
 */
 Route::get('/', function () {
-    return view('home'); // landing page / marketing
+    return view('home');
 })->name('home');
 
 Route::get('/about', function () {
     return view('about');
-});
+})->name('about');
 
 /*
 |--------------------------------------------------------------------------
-| AUTH REQUIRED (USER & ADMIN)
+| AUTHENTICATED USER (USER & ADMIN)
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth'])->group(function () {
 
-    // ===== SISTEM REKOMENDASI =====
-    Route::get('/rekomendasi', function () {return view('rekomendasi.wizard');})
-        ->name('rekomendasi');
+    // ===== SISTEM REKOMENDASI (WIZARD) =====
+    Route::get('/rekomendasi', function () {
+        return view('rekomendasi.wizard');
+    })->name('rekomendasi');
 
     Route::post('/rekomendasi/hasil', [RekomendasiController::class, 'proses'])
         ->name('rekomendasi.proses');
+
     // ===== DASHBOARD =====
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
@@ -73,10 +75,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/smartphones/{smartphone}', [SmartphoneController::class, 'destroy'])
         ->name('smartphones.destroy');
 
-    // test admin
     Route::get('/cek-admin', function () {
         return 'ADMIN OK';
     });
 });
 
-require __DIR__.'/auth.php';
+/*
+|--------------------------------------------------------------------------
+| AUTH (BREEZE)
+|--------------------------------------------------------------------------
+*/
+require __DIR__ . '/auth.php';
