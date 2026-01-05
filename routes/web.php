@@ -26,6 +26,19 @@ Route::get('/about', function () {
 */
 Route::middleware(['auth'])->group(function () {
 
+
+    // Sistem rekomendasi
+    Route::get('/rekomendasi', function () {
+        return view('rekomendasi');
+    })->name('rekomendasi');
+
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
+
+    // 🔥 ROUTE FILTER DASHBOARD (WAJIB UNTUK VISUALISASI)
+    Route::get('/dashboard/filter', [DashboardController::class, 'filter'])
+        ->name('dashboard.filter');
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
@@ -96,7 +109,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/smartphones/{smartphone}', [SmartphoneController::class, 'destroy'])
         ->name('smartphones.destroy');
 
-    // Debug admin
+
     Route::get('/cek-admin', function () {
         return 'ADMIN OK';
     });
