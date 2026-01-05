@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SmartphoneController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\RekomendasiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +29,22 @@ Route::middleware(['auth'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
+
+    // ===== SISTEM REKOMENDASI =====
+    Route::get('/rekomendasi', function () {return view('rekomendasi.wizard');})
+        ->name('rekomendasi');
+
+    Route::post('/rekomendasi/hasil', [RekomendasiController::class, 'proses'])
+        ->name('rekomendasi.proses');
+    // ===== DASHBOARD =====
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
+
+    // ===== SMARTPHONE (READ ONLY) =====
+    Route::get('/smartphones', [SmartphoneController::class, 'index'])
+        ->name('smartphones.index');
+
+    // ===== PROFILE =====
 
     // Sistem Rekomendasi
     Route::get('/rekomendasi', function () {
