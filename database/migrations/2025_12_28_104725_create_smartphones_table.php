@@ -13,8 +13,18 @@ return new class extends Migration
     {
         Schema::create('smartphones', function (Blueprint $table) {
             $table->id();
+            $table->string('company_name');
+            $table->string('model_name');
+            $table->integer('ram');               // GB
+            $table->integer('front_camera');      // MP
+            $table->integer('back_camera');       // MP
+            $table->integer('battery_capacity');  // mAh
+            $table->float('screen_size');         // inch
+            $table->integer('price_usa');          // USD
+            $table->year('launched_year');
             $table->timestamps();
         });
+
     }
 
     /**
@@ -25,3 +35,4 @@ return new class extends Migration
         Schema::dropIfExists('smartphones');
     }
 };
+// cuihhh

@@ -39,8 +39,8 @@ Route::middleware(['auth'])->group(function () {
         return view('rekomendasi.wizard');
     })->name('rekomendasi');
 
-    Route::post('/rekomendasi/hasil', [RekomendasiController::class, 'proses'])
-        ->name('rekomendasi.proses');
+    Route::match(['get', 'post'], '/rekomendasi/hasil', [RekomendasiController::class, 'proses'])
+    ->name('rekomendasi.hasil');
 
     // ===== SMARTPHONE (READ ONLY) =====
     Route::get('/smartphones', [SmartphoneController::class, 'index'])
