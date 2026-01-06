@@ -36,6 +36,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/rekomendasi/hasil', [RekomendasiController::class, 'proses'])
         ->name('rekomendasi.proses');
+
     // ===== DASHBOARD =====
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
@@ -45,21 +46,6 @@ Route::middleware(['auth'])->group(function () {
         ->name('smartphones.index');
 
     // ===== PROFILE =====
-
-    // Sistem Rekomendasi
-    Route::get('/rekomendasi', function () {
-        return view('rekomendasi');
-    })->name('rekomendasi');
-
-    // Smartphone (READ)
-    Route::get('/smartphones', [SmartphoneController::class, 'index'])
-        ->name('smartphones.index');
-
-    /*
-    |--------------------------------------------------------------------------
-    | PROFILE
-    |--------------------------------------------------------------------------
-    */
     Route::get('/profile', [ProfileController::class, 'edit'])
         ->name('profile.edit');
 
@@ -70,7 +56,6 @@ Route::middleware(['auth'])->group(function () {
         ->name('profile.destroy');
 });
 
-
 /*
 |--------------------------------------------------------------------------
 | ADMIN ONLY
@@ -78,21 +63,18 @@ Route::middleware(['auth'])->group(function () {
 */
 Route::middleware(['auth', 'admin'])->group(function () {
 
-    // Create
     Route::get('/smartphones/create', [SmartphoneController::class, 'create'])
         ->name('smartphones.create');
 
     Route::post('/smartphones', [SmartphoneController::class, 'store'])
         ->name('smartphones.store');
 
-    // Edit
     Route::get('/smartphones/{smartphone}/edit', [SmartphoneController::class, 'edit'])
         ->name('smartphones.edit');
 
     Route::put('/smartphones/{smartphone}', [SmartphoneController::class, 'update'])
         ->name('smartphones.update');
 
-    // Delete
     Route::delete('/smartphones/{smartphone}', [SmartphoneController::class, 'destroy'])
         ->name('smartphones.destroy');
 
@@ -104,7 +86,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| AUTH (LARAVEL BREEZE)
+| AUTH (BREEZE)
 |--------------------------------------------------------------------------
 */
 require __DIR__ . '/auth.php';
