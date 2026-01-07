@@ -12,74 +12,85 @@
         @else
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($hasil as $index => $item)
+                    @php
+                        $phone = $item->smartphone;
+                    @endphp
+
                     <div class="bg-slate-800 rounded-xl p-5 shadow">
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-sm text-slate-400">
                                 Rank #{{ $index + 1 }}
                             </span>
                             <span class="text-sm font-bold text-indigo-400">
-                                Skor {{ $item['score'] }}
+                                Skor {{ number_format($item->score, 4) }}
                             </span>
                         </div>
 
+                        {{-- Nama --}}
                         <h2 class="text-xl font-semibold">
-                            {{ $item['phone']->model_name }}
+                            {{ $phone->model_name }}
                         </h2>
 
                         <p class="text-slate-400 mb-2">
-                            {{ $item['phone']->company_name }}
+                            {{ $phone->company_name }}
                         </p>
 
+                        {{-- Spesifikasi utama --}}
                         <ul class="text-sm space-y-1 mb-3">
-                            <li>📸 Kamera: {{ $item['phone']->back_camera }} MP</li>
-                            <li>🧠 RAM: {{ $item['phone']->ram }} GB</li>
-                            <li>🔋 Baterai: {{ $item['phone']->battery_capacity }} mAh</li>
+                            <li>📸 Kamera: {{ $phone->back_camera }} MP</li>
+                            <li>🧠 RAM: {{ $phone->ram }} GB</li>
+                            <li>🔋 Baterai: {{ $phone->battery_capacity }} mAh</li>
                         </ul>
 
+                        {{-- Harga --}}
                         <div class="font-bold text-green-400 mb-3">
-                            Rp {{ number_format($item['price_rp'], 0, ',', '.') }}
+                            Rp {{ number_format($phone->price_usa * 16000, 0, ',', '.') }}
                         </div>
 
+                        {{-- Alasan --}}
                         <div class="text-sm text-slate-300 bg-slate-700 p-3 rounded">
                             💡 <b>Direkomendasikan karena:</b><br>
-                            Memiliki spesifikasi tinggi dibandingkan kandidat lain
-                            dalam rentang budget Anda.
+                            Memiliki nilai preferensi tertinggi berdasarkan
+                            kriteria yang Anda tentukan.
                         </div>
-<button 
-    onclick="toggleDetail('detail-{{ $loop->index }}')" 
-    class="mt-4 text-sm text-blue-400 hover:underline">
-    🔍 Lihat Spesifikasi
-</button>
 
-<div id="detail-{{ $loop->index }}" 
-     class="hidden mt-4 text-sm text-slate-300 border-t border-slate-600 pt-3 space-y-1">
-     
-    <p>📸 Kamera Depan: {{ $item['phone']->front_camera }} MP</p>
-    <p>📸 Kamera Belakang: {{ $item['phone']->back_camera }} MP</p>
-    <p>🧠 Prosesor: {{ $item['phone']->processor }}</p>
-    <p>📱 Layar: {{ $item['phone']->screen_size }} inch</p>
-    <p>⚖️ Berat: {{ $item['phone']->mobile_weight }} gram</p>
-    <p>📅 Tahun Rilis: {{ $item['phone']->launched_year }}</p>
-</div>
+                        {{-- Toggle detail --}}
+                        <button
+                            onclick="toggleDetail('detail-{{ $loop->index }}')"
+                            class="mt-4 text-sm text-blue-400 hover:underline">
+                            🔍 Lihat Spesifikasi
+                        </button>
+
+                        {{-- Detail --}}
+                        <div id="detail-{{ $loop->index }}"
+                             class="hidden mt-4 text-sm text-slate-300 border-t border-slate-600 pt-3 space-y-1">
+
+                            <p>📸 Kamera Depan: {{ $phone->front_camera }} MP</p>
+                            <p>📸 Kamera Belakang: {{ $phone->back_camera }} MP</p>
+                            <p>🧠 Prosesor: {{ $phone->processor }}</p>
+                            <p>📱 Layar: {{ $phone->screen_size }} inch</p>
+                            <p>⚖️ Berat: {{ $phone->mobile_weight }} gram</p>
+                            <p>📅 Tahun Rilis: {{ $phone->launched_year }}</p>
+                        </div>
 
                     </div>
                 @endforeach
             </div>
         @endif
 
+        {{-- Tombol ulang --}}
         <div class="text-center mt-10">
             <a href="{{ route('rekomendasi') }}"
                class="inline-block px-6 py-3 bg-indigo-600 rounded hover:bg-indigo-700">
                 Ulangi Rekomendasi
             </a>
         </div>
-
     </div>
-    <script>
-function toggleDetail(id) {
-    const el = document.getElementById(id);
-    el.classList.toggle('hidden');
-}
-</script>
 
+    <script>
+        function toggleDetail(id) {
+            document.getElementById(id).classList.toggle('hidden');
+        }
+    </script>
 </x-app-layout>
+<!-- cuihhh -->
