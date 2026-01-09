@@ -18,9 +18,6 @@ Route::get('/', function () {
 Route::get('/about', function () {
     return view('about');
 })->name('about');
-Route::get('/beranda', function () {
-    return view('pages.beranda');
-})->name('beranda');
 
 /*
 |--------------------------------------------------------------------------
@@ -29,13 +26,17 @@ Route::get('/beranda', function () {
 */
 Route::middleware(['auth'])->group(function () {
 
-    // ===== DASHBOARD (HANYA 1 KALI) =====
+    // ===== DASHBOARD =====
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 
-    // 🔥 TAMBAHKAN ROUTE FILTER DI SINI
     Route::get('/dashboard/filter', [DashboardController::class, 'filter'])
         ->name('dashboard.filter');
+
+    // ===== BERANDA =====
+    Route::get('/beranda', function () {
+        return view('pages.beranda');
+    })->name('beranda');
 
     // ===== SISTEM REKOMENDASI =====
     Route::get('/rekomendasi', function () {
@@ -43,7 +44,7 @@ Route::middleware(['auth'])->group(function () {
     })->name('rekomendasi');
 
     Route::match(['get', 'post'], '/rekomendasi/hasil', [RekomendasiController::class, 'proses'])
-    ->name('rekomendasi.hasil');
+        ->name('rekomendasi.hasil');
 
     // ===== SMARTPHONE (READ ONLY) =====
     Route::get('/smartphones', [SmartphoneController::class, 'index'])
@@ -66,7 +67,7 @@ Route::middleware(['auth'])->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'admin'])->group(function () {
-
+    // HANYA CRUD SMARTPHONE (tidak termasuk beranda)
     Route::get('/smartphones/create', [SmartphoneController::class, 'create'])
         ->name('smartphones.create');
 
@@ -82,9 +83,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/smartphones/{smartphone}', [SmartphoneController::class, 'destroy'])
         ->name('smartphones.destroy');
 
-    Route::get('/beranda', function () {return view('pages.beranda');})
-        ->name('beranda');
-
     // Debug admin
     Route::get('/cek-admin', function () {
         return 'ADMIN OK';
@@ -97,6 +95,3 @@ Route::middleware(['auth', 'admin'])->group(function () {
 |--------------------------------------------------------------------------
 */
 require __DIR__ . '/auth.php';
-
-
-// baby
