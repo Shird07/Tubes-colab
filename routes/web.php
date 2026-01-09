@@ -23,7 +23,7 @@ Route::get('/cek-folder-export', function () {
 |--------------------------------------------------------------------------
 */
 Route::get('/', function () {
-    return view('home');
+    return view('pages.home');
 })->name('home');
 
 Route::get('/about', function () {
@@ -50,8 +50,8 @@ Route::middleware(['auth'])->group(function () {
         return view('rekomendasi.wizard');
     })->name('rekomendasi');
 
-    Route::post('/rekomendasi/hasil', [RekomendasiController::class, 'proses'])
-        ->name('rekomendasi.proses');
+    Route::match(['get', 'post'], '/rekomendasi/hasil', [RekomendasiController::class, 'proses'])
+        ->name('rekomendasi.hasil');
 
     // ===== SMARTPHONE (READ ONLY) =====
     Route::get('/smartphones', [SmartphoneController::class, 'index'])
@@ -66,6 +66,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
+
+    Route::get('/beranda', function () {
+        return view('pages.beranda');
+    })->name('beranda');
 });
 
 /*
