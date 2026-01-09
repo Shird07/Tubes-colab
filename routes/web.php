@@ -6,6 +6,17 @@ use App\Http\Controllers\SmartphoneController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RekomendasiController;
 
+// Debug route
+Route::get('/cek-folder-export', function () {
+    // Cek apakah folder Export ada
+    $folderExists = is_dir(app_path('Export'));
+    $fileExists = file_exists(app_path('Export/SmartphonesExport.php'));
+    
+    return "Folder Export exists: " . ($folderExists ? 'YES' : 'NO') . "<br>" .
+           "File SmartphonesExport.php exists: " . ($fileExists ? 'YES' : 'NO') . "<br>" .
+           "App path: " . app_path();
+});
+
 /*
 |--------------------------------------------------------------------------
 | PUBLIC (GUEST)
@@ -26,17 +37,17 @@ Route::get('/about', function () {
 */
 Route::middleware(['auth'])->group(function () {
 
+    // ===== BERANDA =====
+    Route::get('/beranda', function () {
+        return view('pages.beranda');
+    })->name('beranda');
+
     // ===== DASHBOARD =====
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 
     Route::get('/dashboard/filter', [DashboardController::class, 'filter'])
         ->name('dashboard.filter');
-
-    // ===== BERANDA =====
-    Route::get('/beranda', function () {
-        return view('pages.beranda');
-    })->name('beranda');
 
     // ===== SISTEM REKOMENDASI =====
     Route::get('/rekomendasi', function () {
@@ -49,6 +60,10 @@ Route::middleware(['auth'])->group(function () {
     // ===== SMARTPHONE (READ ONLY) =====
     Route::get('/smartphones', [SmartphoneController::class, 'index'])
         ->name('smartphones.index');
+
+    // ===== EXPORT EXCEL =====
+    Route::get('/smartphones/export/excel', [SmartphoneController::class, 'exportExcel'])
+        ->name('smartphones.export.excel');
 
     // ===== PROFILE =====
     Route::get('/profile', [ProfileController::class, 'edit'])
@@ -67,7 +82,7 @@ Route::middleware(['auth'])->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'admin'])->group(function () {
-    // HANYA CRUD SMARTPHONE (tidak termasuk beranda)
+    // HANYA CRUD SMARTPHONE
     Route::get('/smartphones/create', [SmartphoneController::class, 'create'])
         ->name('smartphones.create');
 
