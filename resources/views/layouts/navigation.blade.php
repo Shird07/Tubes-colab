@@ -12,16 +12,26 @@
 
                 <!-- Navigation Links (DESKTOP) -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <!-- Beranda -->
+                    <x-nav-link :href="route('beranda')" :active="request()->routeIs('beranda')">
+                        🏠 {{ __('Beranda') }}
+                    </x-nav-link>
+
                     <!-- Dashboard -->
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                        📊 {{ __('Dashboard') }}
+                    </x-nav-link>
+
+                    <!-- Rekomendasi -->
+                    <x-nav-link :href="route('rekomendasi')" :active="request()->routeIs('rekomendasi')">
+                        🔍 {{ __('Rekomendasi') }}
                     </x-nav-link>
 
                     <!-- Manage Smartphone -->
                     <x-nav-link 
                         :href="route('smartphones.index')" 
                         :active="request()->routeIs('smartphones.*')">
-                        {{ __('Manage Smartphone') }}
+                        📱 {{ __('Manage Smartphone') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -74,14 +84,26 @@
     <!-- Responsive Navigation Menu (MOBILE) -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
+            <!-- Beranda Mobile -->
+            <x-responsive-nav-link :href="route('beranda')" :active="request()->routeIs('beranda')">
+                🏠 {{ __('Beranda') }}
             </x-responsive-nav-link>
 
+            <!-- Dashboard Mobile -->
+            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                📊 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+
+            <!-- Rekomendasi Mobile -->
+            <x-responsive-nav-link :href="route('rekomendasi')" :active="request()->routeIs('rekomendasi')">
+                🔍 {{ __('Rekomendasi') }}
+            </x-responsive-nav-link>
+
+            <!-- Manage Smartphone Mobile -->
             <x-responsive-nav-link 
                 :href="route('smartphones.index')" 
                 :active="request()->routeIs('smartphones.*')">
-                {{ __('Manage Smartphone') }}
+                📱 {{ __('Manage Smartphone') }}
             </x-responsive-nav-link>
         </div>
 

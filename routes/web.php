@@ -40,13 +40,17 @@ Route::get('/beranda', function () {
 */
 Route::middleware(['auth'])->group(function () {
 
-    // ===== DASHBOARD (HANYA 1 KALI) =====
+    // ===== DASHBOARD =====
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 
-    // 🔥 TAMBAHKAN ROUTE FILTER DI SINI
     Route::get('/dashboard/filter', [DashboardController::class, 'filter'])
         ->name('dashboard.filter');
+
+    // ===== BERANDA =====
+    Route::get('/beranda', function () {
+        return view('pages.beranda');
+    })->name('beranda');
 
     // ===== SISTEM REKOMENDASI =====
     Route::get('/rekomendasi', function () {
@@ -81,7 +85,7 @@ Route::middleware(['auth'])->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'admin'])->group(function () {
-
+    // HANYA CRUD SMARTPHONE (tidak termasuk beranda)
     Route::get('/smartphones/create', [SmartphoneController::class, 'create'])
         ->name('smartphones.create');
 
@@ -116,6 +120,7 @@ Route::get('/smartphones/export/excel', [SmartphoneController::class, 'exportExc
 | AUTH (BREEZE)
 |--------------------------------------------------------------------------
 */
+
 require __DIR__ . '/auth.php';
 
 // ROUTE EXPORT EXCEL - PAKAI CLOSURE
