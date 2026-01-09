@@ -12,12 +12,15 @@ use App\Http\Controllers\RekomendasiController;
 |--------------------------------------------------------------------------
 */
 Route::get('/', function () {
-    return view('home');
+    return view('pages.home');
 })->name('home');
 
 Route::get('/about', function () {
     return view('about');
 })->name('about');
+Route::get('/beranda', function () {
+    return view('pages.beranda');
+})->name('beranda');
 
 /*
 |--------------------------------------------------------------------------
@@ -78,6 +81,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::delete('/smartphones/{smartphone}', [SmartphoneController::class, 'destroy'])
         ->name('smartphones.destroy');
+
+    Route::get('/beranda', function () {return view('pages.beranda');})
+        ->name('beranda');
 
     // Debug admin
     Route::get('/cek-admin', function () {
