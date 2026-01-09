@@ -88,3 +88,4 @@ class SmartphonesExport implements FromCollection, WithHeadings, WithMapping, Wi
         ];
     }
 }
+//exel

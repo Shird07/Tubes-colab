@@ -283,3 +283,4 @@ class SmartphoneController extends Controller
         return Excel::download($export, $filename);
     }
 }
+//end controllerexel

@@ -111,3 +111,5 @@ Route::get('/smartphones/export/excel', [SmartphoneController::class, 'exportExc
 |--------------------------------------------------------------------------
 */
 require __DIR__ . '/auth.php';
+
+// ROUTE EXPORT EXCEL - PAKAI CLOSURE
