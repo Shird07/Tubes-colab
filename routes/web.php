@@ -6,6 +6,17 @@ use App\Http\Controllers\SmartphoneController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RekomendasiController;
 
+// Debug route
+Route::get('/cek-folder-export', function () {
+    // Cek apakah folder Export ada
+    $folderExists = is_dir(app_path('Export'));
+    $fileExists = file_exists(app_path('Export/SmartphonesExport.php'));
+    
+    return "Folder Export exists: " . ($folderExists ? 'YES' : 'NO') . "<br>" .
+           "File SmartphonesExport.php exists: " . ($fileExists ? 'YES' : 'NO') . "<br>" .
+           "App path: " . app_path();
+});
+
 /*
 |--------------------------------------------------------------------------
 | PUBLIC (GUEST)
@@ -43,7 +54,7 @@ Route::middleware(['auth'])->group(function () {
     })->name('rekomendasi');
 
     Route::match(['get', 'post'], '/rekomendasi/hasil', [RekomendasiController::class, 'proses'])
-    ->name('rekomendasi.hasil');
+        ->name('rekomendasi.hasil');
 
     // ===== SMARTPHONE (READ ONLY) =====
     Route::get('/smartphones', [SmartphoneController::class, 'index'])
@@ -58,6 +69,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
+
+    Route::get('/beranda', function () {
+        return view('pages.beranda');
+    })->name('beranda');
 });
 
 /*
@@ -91,6 +106,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
     });
 });
 
+// ROUTE EXPORT EXCEL - PAKAI CONTROLLER METHOD
+Route::get('/smartphones/export/excel', [SmartphoneController::class, 'exportExcel'])
+    ->middleware(['auth'])
+    ->name('smartphones.export.excel');
+
 /*
 |--------------------------------------------------------------------------
 | AUTH (BREEZE)
@@ -98,5 +118,5 @@ Route::middleware(['auth', 'admin'])->group(function () {
 */
 require __DIR__ . '/auth.php';
 
-
+// ROUTE EXPORT EXCEL - PAKAI CLOSURE
 // baby
