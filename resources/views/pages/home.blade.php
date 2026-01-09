@@ -1,7 +1,6 @@
 @extends('layouts.marketing')
 
 @section('content')
-<<<<<<< HEAD
 <!-- Hero Section -->
 <section class="pt-24 lg:pt-32 pb-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -18,25 +17,6 @@
                 <strong class="text-gray-800">baterai</strong>.
             </p>
 
-=======
-
-<!-- Hero Section -->
-<section class="pt-24 lg:pt-32 pb-20">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center">
-            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
-                Sistem Rekomendasi<br>
-                <span class="text-indigo-600">Smartphone Terbaik</span>
-            </h1>
-            
-            <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-10">
-                Platform berbasis sistem pakar untuk membantu Anda memilih smartphone
-                terbaik berdasarkan <strong class="text-gray-800">budget</strong>, 
-                <strong class="text-gray-800">kamera</strong>, dan 
-                <strong class="text-gray-800">baterai</strong>.
-            </p>
-
->>>>>>> 9fa7f39b2bbb79699cd5bcc3dc46eb03e727fdc6
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="{{ route('rekomendasi') }}"
                    class="inline-flex items-center justify-center px-8 py-3 text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10 transition duration-300">
@@ -184,36 +164,6 @@
                 Login di sini
             </a>
         </p>
-<<<<<<< HEAD
-=======
-=======
-<section class="pt-24 lg:pt-28">
-    <div class="w-full px-10 lg:px-16">
-
-        <div class="max-w-3xl">
-            <h1 class="text-5xl font-bold mb-6">
-                Sistem Rekomendasi Smartphone
-            </h1>
-
-            <p class="text-gray-400 mb-8">
-                Platform berbasis sistem pakar untuk membantu pengguna memilih smartphone
-                terbaik berdasarkan <strong>budget</strong>, <strong>kamera</strong>, dan <strong>baterai</strong>.
-            </p>
-
-            <div class="flex gap-4">
-                <a href="/rekomendasi"
-                   class="bg-indigo-600 hover:bg-indigo-700 px-6 py-3 rounded-lg">
-                    Mulai Rekomendasi
-                </a>
-
-                <a href="{{ route('login') }}"
-                   class="px-6 py-3 rounded-lg border border-white/20 hover:bg-white/10">
-                    Login
-                </a>
-            </div>
-        </div>
-
->>>>>>> 9fa7f39b2bbb79699cd5bcc3dc46eb03e727fdc6
     </div>
 </section>
 
