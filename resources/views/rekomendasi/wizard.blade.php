@@ -14,8 +14,8 @@
         </div>
     </div>
 <div id="wizard" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-    <form method="POST" action="{{ route('rekomendasi.proses') }}"
-          class="bg-slate-800 p-8 rounded-xl w-full max-w-lg text-white space-y-6">
+    <form method="POST" action="{{ route('rekomendasi.hasil') }}"
+      class="bg-slate-800 p-8 rounded-xl w-full max-w-lg text-white space-y-6">
 
         @csrf
 
@@ -23,41 +23,33 @@
         <div class="step">
             <h2 class="text-xl font-bold mb-2">Berapa budget maksimal Anda?</h2>
             <input type="number" name="budget" required
-                   placeholder="Contoh: 5000000"
-                   class="w-full p-3 rounded text-black">
+                placeholder="Contoh: 5000000"
+                class="w-full p-3 rounded text-black">
             <p class="text-sm text-slate-400 mt-2">* Dalam Rupiah</p>
         </div>
 
         {{-- STEP 2 --}}
         <div class="step hidden">
-            <h2 class="text-xl font-bold mb-2">Brand favorit? (opsional)</h2>
-            <input type="text" name="brand"
-                   placeholder="Samsung, Apple, Xiaomi..."
-                   class="w-full p-3 rounded text-black">
+            <h2 class="text-xl font-bold mb-2">Minimal kamera belakang (MP)?</h2>
+            <input type="number" name="kamera"
+                placeholder="Contoh: 48"
+                class="w-full p-3 rounded text-black">
         </div>
 
         {{-- STEP 3 --}}
         <div class="step hidden">
-            <h2 class="text-xl font-bold mb-2">Minimal kamera belakang (MP)?</h2>
-            <input type="number" name="camera"
-                   placeholder="Contoh: 48"
-                   class="w-full p-3 rounded text-black">
+            <h2 class="text-xl font-bold mb-2">Minimal RAM (GB)?</h2>
+            <input type="number" name="ram"
+                placeholder="Contoh: 8"
+                class="w-full p-3 rounded text-black">
         </div>
 
         {{-- STEP 4 --}}
         <div class="step hidden">
-            <h2 class="text-xl font-bold mb-2">Minimal RAM (GB)?</h2>
-            <input type="number" name="ram"
-                   placeholder="Contoh: 8"
-                   class="w-full p-3 rounded text-black">
-        </div>
-
-        {{-- STEP 5 --}}
-        <div class="step hidden">
             <h2 class="text-xl font-bold mb-2">Minimal baterai (mAh)?</h2>
-            <input type="number" name="battery"
-                   placeholder="Contoh: 5000"
-                   class="w-full p-3 rounded text-black">
+            <input type="number" name="baterai"
+                placeholder="Contoh: 5000"
+                class="w-full p-3 rounded text-black">
         </div>
 
         {{-- NAV --}}

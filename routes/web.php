@@ -29,6 +29,9 @@ Route::get('/', function () {
 Route::get('/about', function () {
     return view('about');
 })->name('about');
+Route::get('/beranda', function () {
+    return view('pages.beranda');
+})->name('beranda');
 
 /*
 |--------------------------------------------------------------------------
@@ -94,6 +97,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/smartphones/{smartphone}', [SmartphoneController::class, 'destroy'])
         ->name('smartphones.destroy');
 
+    Route::get('/beranda', function () {return view('pages.beranda');})
+        ->name('beranda');
+
     // Debug admin
     Route::get('/cek-admin', function () {
         return 'ADMIN OK';
@@ -113,3 +119,4 @@ Route::get('/smartphones/export/excel', [SmartphoneController::class, 'exportExc
 require __DIR__ . '/auth.php';
 
 // ROUTE EXPORT EXCEL - PAKAI CLOSURE
+// baby

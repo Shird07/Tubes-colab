@@ -4,75 +4,38 @@
     <meta charset="UTF-8">
     <title>{{ $title ?? 'SmartRec' }}</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+
+    {{-- VITE WAJIB ADA DI LAYOUT --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="bg-slate-950 text-white antialiased">
+<body class="bg-slate-950 text-white antialiased font-[Inter]">
 
-<!-- ================= NAVBAR ================= -->
-<header class="px-8 py-6 flex items-center justify-between border-b border-white/10">
 
-    {{-- LOGO (PNG) --}}
-    <a href="{{ route('home') }}" class="flex items-center gap-3">
-        <img
-            src="{{ asset('img/SmartRec-Logo.png') }}"
-            alt="SmartRec Logo"
-            style="height:140px; width:auto;"
-        >
+    <!-- ================= NAVBAR ================= -->
+    <header class="px-8 py-6 flex items-center justify-between border-b border-white/10">
+
+    <a href="{{ route('home') }}" class="text-2xl font-bold text-indigo-400">
+        SmartRec
     </a>
 
-    {{-- NAVIGATION --}}
-    <nav class="flex gap-7 text-xl items-center">
-
-        {{-- HOME --}}
-        <a href="{{ route('home') }}" class="hover:text-blue-400">
-            Home
-        </a>
-
-        {{-- AUTHENTICATED USER --}}
-        @auth
-            <a href="{{ route('rekomendasi') }}" class="hover:text-blue-400">
-                Rekomendasi
-            </a>
-
-            @if(auth()->user()->role === 'admin')
-                <a href="{{ route('dashboard') }}" class="hover:text-blue-400">
-                    Dashboard
-                </a>
-            @endif
-
-            <span class="opacity-70">
-                {{ auth()->user()->name }}
-            </span>
-
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button class="hover:text-red-400">
-                    Logout
-                </button>
-            </form>
-        @endauth
-
-        {{-- GUEST --}}
-        @guest
-            <a href="{{ route('login') }}" class="hover:text-blue-400">
-                Login
-            </a>
-
-            <a href="{{ route('register') }}"
-               class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-white">
-                Register
-            </a>
-        @endguest
-
+    <nav class="flex gap-6 text-lg items-center">
+        <a href="{{ route('home') }}" class="hover:text-blue-400">Home</a>
+        <a href="{{ route('about') }}" class="hover:text-blue-400">Tentang</a>
     </nav>
-</header>
-<!-- ================= END NAVBAR ================= -->
 
-<!-- CONTENT -->
-<main>
-    @yield('content')
-</main>
+</header>
+
+    <!-- ================= END NAVBAR ================= -->
+
+    <!-- CONTENT -->
+    <main>
+        @yield('content')
+    </main>
 
 </body>
 </html>
