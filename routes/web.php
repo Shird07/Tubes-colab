@@ -29,9 +29,6 @@ Route::get('/', function () {
 Route::get('/about', function () {
     return view('about');
 })->name('about');
-Route::get('/beranda', function () {
-    return view('pages.beranda');
-})->name('beranda');
 
 /*
 |--------------------------------------------------------------------------
@@ -40,17 +37,17 @@ Route::get('/beranda', function () {
 */
 Route::middleware(['auth'])->group(function () {
 
+    // ===== BERANDA =====
+    Route::get('/beranda', function () {
+        return view('pages.beranda');
+    })->name('beranda');
+
     // ===== DASHBOARD =====
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 
     Route::get('/dashboard/filter', [DashboardController::class, 'filter'])
         ->name('dashboard.filter');
-
-    // ===== BERANDA =====
-    Route::get('/beranda', function () {
-        return view('pages.beranda');
-    })->name('beranda');
 
     // ===== SISTEM REKOMENDASI =====
     Route::get('/rekomendasi', function () {
@@ -64,6 +61,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/smartphones', [SmartphoneController::class, 'index'])
         ->name('smartphones.index');
 
+    // ===== EXPORT EXCEL =====
+    Route::get('/smartphones/export/excel', [SmartphoneController::class, 'exportExcel'])
+        ->name('smartphones.export.excel');
+
     // ===== PROFILE =====
     Route::get('/profile', [ProfileController::class, 'edit'])
         ->name('profile.edit');
@@ -73,10 +74,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
-
-    Route::get('/beranda', function () {
-        return view('pages.beranda');
-    })->name('beranda');
 });
 
 /*
@@ -85,7 +82,7 @@ Route::middleware(['auth'])->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'admin'])->group(function () {
-    // HANYA CRUD SMARTPHONE (tidak termasuk beranda)
+    // HANYA CRUD SMARTPHONE
     Route::get('/smartphones/create', [SmartphoneController::class, 'create'])
         ->name('smartphones.create');
 
@@ -101,27 +98,15 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/smartphones/{smartphone}', [SmartphoneController::class, 'destroy'])
         ->name('smartphones.destroy');
 
-    Route::get('/beranda', function () {return view('pages.beranda');})
-        ->name('beranda');
-
     // Debug admin
     Route::get('/cek-admin', function () {
         return 'ADMIN OK';
     });
 });
 
-// ROUTE EXPORT EXCEL - PAKAI CONTROLLER METHOD
-Route::get('/smartphones/export/excel', [SmartphoneController::class, 'exportExcel'])
-    ->middleware(['auth'])
-    ->name('smartphones.export.excel');
-
 /*
 |--------------------------------------------------------------------------
 | AUTH (BREEZE)
 |--------------------------------------------------------------------------
 */
-
 require __DIR__ . '/auth.php';
-
-// ROUTE EXPORT EXCEL - PAKAI CLOSURE
-// baby
