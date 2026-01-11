@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SmartphoneController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RekomendasiController;
+use App\Http\Controllers\HomeController;
 
 // Debug route
 Route::get('/cek-folder-export', function () {
@@ -22,10 +23,8 @@ Route::get('/cek-folder-export', function () {
 | PUBLIC (GUEST)
 |--------------------------------------------------------------------------
 */
-Route::get('/', function () {
-    return view('pages.home');
-})->name('home');
-
+Route::get('/', [HomeController::class, 'index'])
+->name('home');
 Route::get('/about', function () {
     return view('about');
 })->name('about');
