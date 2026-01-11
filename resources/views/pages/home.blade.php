@@ -137,7 +137,6 @@
             style="width:100vw; margin-left:calc(-50vw + 50%);"
         >
 
-            <!-- JUDUL -->
             <div class="max-w-4xl mx-auto text-center mb-16 px-6">
                 <h2 class="text-4xl font-bold text-orange-500">
                     Clients & Partners
@@ -147,112 +146,26 @@
 
             <div class="space-y-14">
 
-                <!-- ROW 1 (KIRI) -->
+                @for ($i = 0; $i < 3; $i++)
                 <div class="relative overflow-hidden fade-mask">
-                    <div class="marquee marquee-left flex gap-16 w-max">
+                    <div class="marquee {{ $i % 2 == 0 ? 'marquee-left' : 'marquee-right' }} flex gap-16 w-max">
                         @foreach($partners as $p)
                             <img src="{{ asset('storage/'.$p->logo) }}"
-                                alt="{{ $p->name }}"
-                                class="h-14 flex-shrink-0">
+                                 alt="{{ $p->name }}"
+                                 class="h-14 flex-shrink-0">
                         @endforeach
                         @foreach($partners as $p)
                             <img src="{{ asset('storage/'.$p->logo) }}"
-                                alt="{{ $p->name }}"
-                                class="h-14 flex-shrink-0">
+                                 alt="{{ $p->name }}"
+                                 class="h-14 flex-shrink-0">
                         @endforeach
                     </div>
                 </div>
-
-                <!-- ROW 2 (KANAN) -->
-                <div class="relative overflow-hidden fade-mask">
-                    <div class="marquee marquee-right flex gap-16 w-max">
-                        @foreach($partners as $p)
-                            <img src="{{ asset('storage/'.$p->logo) }}"
-                                alt="{{ $p->name }}"
-                                class="h-14 flex-shrink-0">
-                        @endforeach
-                        @foreach($partners as $p)
-                            <img src="{{ asset('storage/'.$p->logo) }}"
-                                alt="{{ $p->name }}"
-                                class="h-14 flex-shrink-0">
-                        @endforeach
-                    </div>
-                </div>
-
-                <!-- ROW 3 (KIRI) -->
-                <div class="relative overflow-hidden fade-mask">
-                    <div class="marquee marquee-left flex gap-16 w-max">
-                        @foreach($partners as $p)
-                            <img src="{{ asset('storage/'.$p->logo) }}"
-                                alt="{{ $p->name }}"
-                                class="h-14 flex-shrink-0">
-                        @endforeach
-                        @foreach($partners as $p)
-                            <img src="{{ asset('storage/'.$p->logo) }}"
-                                alt="{{ $p->name }}"
-                                class="h-14 flex-shrink-0">
-                        @endforeach
-                    </div>
-                </div>
+                @endfor
 
             </div>
         </section>
 
-
-
-    </div>
-</section>
-
-<!-- ================= HOW IT WORKS ================= -->
-<section class="reveal py-24 bg-slate-900/40">
-    <div class="max-w-6xl mx-auto px-8 text-center">
-        <h2 class="text-3xl font-bold mb-16">
-            Cara Kerja SmartRec
-        </h2>
-
-        <div class="grid md:grid-cols-3 gap-10 text-slate-300">
-            <div>
-                <span class="text-indigo-400 font-bold text-xl">1</span>
-                <h4 class="mt-4 font-semibold text-white">Input Kriteria</h4>
-                <p class="mt-2">Masukkan kebutuhan utama Anda.</p>
-            </div>
-
-            <div>
-                <span class="text-indigo-400 font-bold text-xl">2</span>
-                <h4 class="mt-4 font-semibold text-white">Analisis Sistem Pakar</h4>
-                <p class="mt-2">Perhitungan berbasis aturan.</p>
-            </div>
-
-            <div>
-                <span class="text-indigo-400 font-bold text-xl">3</span>
-                <h4 class="mt-4 font-semibold text-white">Rekomendasi Terbaik</h4>
-                <p class="mt-2">Hasil paling relevan.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ================= CTA ================= -->
-<section class="py-28 text-center">
-    <h2 class="text-3xl font-bold">
-        Mulai Temukan Smartphone yang Tepat
-    </h2>
-    <p class="mt-4 text-slate-300">
-        Gunakan sistem rekomendasi berbasis sistem pakar sekarang.
-    </p>
-
-    <div class="mt-10 flex justify-center gap-4">
-        <a href="{{ route('rekomendasi') }}"
-           class="px-10 py-4 bg-indigo-500 text-white rounded-xl font-semibold hover:bg-indigo-600 transition">
-            Mulai Rekomendasi Gratis
-        </a>
-
-        @if(Route::has('register'))
-        <a href="{{ route('register') }}"
-           class="px-10 py-4 border border-white/20 rounded-xl font-semibold hover:border-indigo-400 hover:text-indigo-400 transition">
-            Buat Akun
-        </a>
-        @endif
     </div>
 </section>
 
