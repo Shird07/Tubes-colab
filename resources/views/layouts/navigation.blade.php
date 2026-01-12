@@ -1,21 +1,20 @@
 <nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
     <!-- Primary Navigation Menu -->
     <div class="w-full px-6">
-        <!-- UBAH BARIS INI: h-16-[96px] menjadi h-14 -->
         <div class="flex justify-between h-14 items-center">
             <div class="flex items-center">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <!-- Ukuran logo lebih kecil -->
-                        <x-application-logo class="block h-6 w-auto -mt-1 fill-current text-gray-800 dark:text-gray-200" />
-
+                    <a href="{{ route('beranda') }}" class="flex items-center gap-2">
+                        <img src="{{ asset('img/logo.png') }}"
+                            alt="SmartRec"
+                            class="h-6 w-auto object-contain">
+                    </a>
                 </div>
 
                 <!-- Navigation Links (DESKTOP) -->
-                <!-- TAMBAHAN: ms-6 untuk margin dan gap lebih kecil -->
                 <div class="hidden space-x-4 sm:-my-px sm:ms-6 sm:flex">
-                    <!-- Beranda - TAMBAH text-sm -->
+                    <!-- Beranda -->
                     <x-nav-link :href="route('beranda')" :active="request()->routeIs('beranda')" class="text-sm py-1">
                         🏠 {{ __('Beranda') }}
                     </x-nav-link>
@@ -41,7 +40,6 @@
             <div class="hidden sm:flex sm:items-center">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <!-- UBAH: padding lebih kecil, font size kecil -->
                         <button
                             class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 hover:text-gray-900 dark:hover:text-white focus:outline-none transition ease-in-out duration-150">
                             <div>{{ Auth::user()->name }}</div>
