@@ -5,10 +5,13 @@
             <div class="flex items-center">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('beranda') }}" class="flex items-center gap-2">
-                        <img src="{{ asset('img/logo.png') }}"
-                            alt="SmartRec"
-                            class="h-6 w-auto object-contain">
+                    <a href="{{ route('dashboard') }}">
+                        <a href="{{ route('beranda') }}" class="flex items-center gap-2">
+                            <img src="{{ asset('img/logo.png') }}"
+                                alt="SmartRec"
+                                class="h-7 w-auto object-contain">
+                        </a>
+
                     </a>
                 </div>
 
