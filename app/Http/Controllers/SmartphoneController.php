@@ -38,7 +38,8 @@ class SmartphoneController extends Controller
             $query->where('ram', 'LIKE', "%{$ramFilter}GB%");
         })
         ->orderBy('id', 'desc')
-        ->paginate(10);
+        ->paginate(10)
+        ->withQueryString();
 
         // ========== DATA UNTUK STATS CARDS ==========
         // Total brand unik (dari semua data)
