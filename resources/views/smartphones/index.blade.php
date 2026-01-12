@@ -399,16 +399,22 @@
     {{-- SCRIPT --}}
     <script>
         // SEARCH DEBOUNCE
+        // SEARCH DEBOUNCE (FIXED)
         const searchInput = document.getElementById('searchInput');
+        const searchForm = document.getElementById('searchForm');
+
         let typingTimer;
         const debounceDelay = 700;
 
-        searchInput.addEventListener('input', function () {
-            clearTimeout(typingTimer);
-            typingTimer = setTimeout(() => {
-                document.querySelector('form').submit();
-            }, debounceDelay);
-        });
+        if (searchInput && searchForm) {
+            searchInput.addEventListener('input', function () {
+                clearTimeout(typingTimer);
+                typingTimer = setTimeout(() => {
+                    console.log('Auto submit search form');
+                    searchForm.submit(); // ✅ PASTI FORM SEARCH
+                }, debounceDelay);
+            });
+        }
 
         // DELETE MODAL ANIMATION
         const deleteModal = document.getElementById('deleteModal');
