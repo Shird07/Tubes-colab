@@ -14,10 +14,21 @@ class RekomendasiController extends Controller
         // =============================
         $USD_TO_IDR = 16000;
 
-        $budgetUSD = ((int) $request->budget) / $USD_TO_IDR;
+        $budgetRupiah = (int) $request->budget;
+        $budgetUSD = $budgetRupiah / $USD_TO_IDR;
 
         // =============================
-        // 2. Siapkan input ke Service
+        // 2. Validasi sederhana (opsional tapi disarankan)
+        // =============================
+        $request->validate([
+            'budget'  => 'required|numeric|min:0',
+            'ram'     => 'nullable|numeric|min:0',
+            'kamera'  => 'nullable|numeric|min:0',
+            'baterai' => 'nullable|numeric|min:0',
+        ]);
+
+        // =============================
+        // 3. Siapkan input ke Service
         // =============================
         $input = [
             'budget'  => $budgetUSD,
@@ -27,12 +38,12 @@ class RekomendasiController extends Controller
         ];
 
         // =============================
-        // 3. Hitung rekomendasi (SAW)
+        // 4. Hitung rekomendasi (Filter + SAW)
         // =============================
         $hasil = $service->calculate($input);
 
         // =============================
-        // 4. Tampilkan hasil
+        // 5. Tampilkan hasil
         // =============================
         return view('rekomendasi.hasil', compact('hasil'));
     }

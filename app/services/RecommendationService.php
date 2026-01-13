@@ -7,48 +7,39 @@ use Illuminate\Support\Collection;
 
 class RecommendationService
 {
-    /**
-     * Hitung rekomendasi smartphone dengan metode SAW
-     */
     public function calculate(array $input): Collection
     {
         // =============================
-        // 1. Filter berdasarkan budget
+        // 1. FILTER BERDASARKAN SPESIFIKASI MINIMAL
         // =============================
-        $smartphones = Smartphone::where(
-            'price_usa',
-            '<=',
-            $input['budget']
-        )->get();
+        $smartphones = Smartphone::where('price_usa', '<=', $input['budget'])
+            ->where('ram', '>=', $input['ram'])
+            ->where('back_camera', '>=', $input['kamera'])
+            ->where('battery_capacity', '>=', $input['baterai'])
+            ->get();
 
         if ($smartphones->isEmpty()) {
             return collect();
         }
 
         // =============================
-        // 2. Ambil nilai max & min
+        // 2. AMBIL NILAI MAX & MIN
         // =============================
-        $maxRam     = $smartphones->max('ram');
-        $maxCamera  = $smartphones->max('back_camera');
-        $maxBattery = $smartphones->max('battery_capacity');
-        $minPrice   = $smartphones->min('price_usa');
+        $maxRam     = max(1, $smartphones->max('ram'));
+        $maxCamera  = max(1, $smartphones->max('back_camera'));
+        $maxBattery = max(1, $smartphones->max('battery_capacity'));
+        $minPrice   = max(1, $smartphones->min('price_usa'));
 
         // =============================
-        // 3. Normalisasi bobot user
+        // 3. BOBOT TETAP (DITENTUKAN SISTEM)
         // =============================
-        $totalBobot =
-            $input['ram'] +
-            $input['kamera'] +
-            $input['baterai'] +
-            5; // bobot harga default
-
-        $wHarga   = 5 / $totalBobot;
-        $wRam     = $input['ram'] / $totalBobot;
-        $wKamera  = $input['kamera'] / $totalBobot;
-        $wBaterai = $input['baterai'] / $totalBobot;
+        $wHarga   = 0.40; // cost
+        $wRam     = 0.20; // benefit
+        $wKamera  = 0.25; // benefit
+        $wBaterai = 0.15; // benefit
 
         // =============================
-        // 4. Hitung skor SAW
+        // 4. HITUNG SKOR SAW
         // =============================
         return $smartphones
             ->map(function ($phone) use (
@@ -61,10 +52,11 @@ class RecommendationService
                 $wKamera,
                 $wBaterai
             ) {
-                $hargaNorm   = $minPrice / max($phone->price_usa, 1);
-                $ramNorm     = $phone->ram / max($maxRam, 1);
-                $kameraNorm  = $phone->back_camera / max($maxCamera, 1);
-                $bateraiNorm = $phone->battery_capacity / max($maxBattery, 1);
+                // Normalisasi
+                $hargaNorm   = $minPrice / max($phone->price_usa, 1);      // cost
+                $ramNorm     = $phone->ram / $maxRam;                      // benefit
+                $kameraNorm  = $phone->back_camera / $maxCamera;           // benefit
+                $bateraiNorm = $phone->battery_capacity / $maxBattery;     // benefit
 
                 $score =
                     ($hargaNorm   * $wHarga) +
@@ -81,4 +73,3 @@ class RecommendationService
             ->values();
     }
 }
-// cuihhh

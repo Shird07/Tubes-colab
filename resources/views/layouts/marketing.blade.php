@@ -128,22 +128,25 @@ html, body {
     <!-- ================= NAVBAR ================= -->
      <header id="navbar"
         class="fixed top-0 left-0 w-full z-50 transition-all duration-300
-            px-8 py-6 flex items-center justify-between
+            px-8 py-3 flex items-center justify-between
             bg-slate-950/80 backdrop-blur border-b border-white/10">
 
-        <!-- LOGO ONLY -->
-        <a href="{{ route('home') }}" class="flex items-center">
-        <img src="{{ asset('img/logo.png') }}"
-            class="h-16 md:h-20 w-auto">
+        <!-- LOGO -->
+        <a href="{{ route('home') }}" class="flex items-center gap-2">
+            <img src="{{ asset('img/logo.png') }}" class="h-6 w-auto">
+            <span class="text-xl font-bold text-indigo-400">
+                SmartRec
+            </span>
         </a>
 
-
         <!-- MENU -->
-        <nav class="flex gap-6 text-lg items-center">
+        <nav class="flex gap-5 text-base items-center">
             <a href="{{ route('home') }}" class="hover:text-indigo-400 transition">Home</a>
-            <a href="{{ route('about') }}" class="hover:text-indigo-400 transition">Tentang</a>
+            <a href="{{ route('dashboard') }}" class="hover:text-indigo-400 transition">Dashboard</a>
+            <a href="{{ route('rekomendasi') }}" class="hover:text-indigo-400 transition">Rekomendasi</a>
         </nav>
     </header>
+
 <!-- ================= END NAVBAR ================= -->
 
 
