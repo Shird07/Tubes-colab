@@ -14,7 +14,7 @@
 
             <h1 class="text-4xl md:text-5xl font-bold leading-tight">
                 Pilih Smartphone
-                <span class="text-indigo-400">Paling Tepat</span><br>
+                <span class="text-indigo-400">Paling Tepat</span>
                 Sesuai Kebutuhan Anda
             </h1>
 
@@ -58,7 +58,7 @@
 </section>
 
 <!-- ================= PROBLEM ================= -->
-<section class="py-24 bg-slate-900/40">
+<section class="reveal py-24 bg-slate-900/40">
     <div class="max-w-6xl mx-auto px-8 text-center">
         <h2 class="text-3xl font-bold mb-12">
             Tantangan Memilih Smartphone
@@ -96,7 +96,7 @@
 </section>
 
 <!-- ================= SOLUSI ================= -->
-<section class="py-24">
+<section class="reveal py-24">
     <div class="max-w-6xl mx-auto px-8">
         <div class="text-center mb-16">
             <h2 class="text-3xl font-bold">
@@ -130,40 +130,42 @@
                 </p>
             </div>
         </div>
-    </div>
-</section>
 
-<!-- ================= CTA ================= -->
-<section class="py-20 bg-gradient-to-r from-indigo-600 to-purple-600">
-    <div class="max-w-4xl mx-auto px-6 text-center">
-        <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">
-            Siap Temukan Smartphone Ideal Anda?
-        </h2>
+        <!-- ================= CLIENTS & PARTNERS ================= -->
+        <section
+            class="reveal py-28 bg-white text-slate-900 overflow-hidden"
+            style="width:100vw; margin-left:calc(-50vw + 50%);"
+        >
 
-        <p class="text-xl text-indigo-100 mb-10">
-            Gunakan sistem rekomendasi kami untuk hasil yang objektif dan cepat.
-        </p>
+            <div class="max-w-4xl mx-auto text-center mb-16 px-6">
+                <h2 class="text-4xl font-bold text-orange-500">
+                    Clients & Partners
+                </h2>
+                <div class="w-20 h-1 bg-orange-500 mx-auto mt-4 rounded"></div>
+            </div>
 
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="{{ route('rekomendasi') }}"
-               class="px-10 py-4 text-lg font-semibold rounded-lg bg-white text-indigo-600 hover:bg-gray-100 transition">
-                🔍 Mulai Sekarang
-            </a>
+            <div class="space-y-14">
 
-            @if (Route::has('register'))
-                <a href="{{ route('register') }}"
-                   class="px-10 py-4 text-lg font-semibold rounded-lg border-2 border-white text-white hover:bg-white/10 transition">
-                    📝 Daftar Akun
-                </a>
-            @endif
-        </div>
+                @for ($i = 0; $i < 3; $i++)
+                <div class="relative overflow-hidden fade-mask">
+                    <div class="marquee {{ $i % 2 == 0 ? 'marquee-left' : 'marquee-right' }} flex gap-16 w-max">
+                        @foreach($partners as $p)
+                            <img src="{{ asset('storage/'.$p->logo) }}"
+                                 alt="{{ $p->name }}"
+                                 class="h-14 flex-shrink-0">
+                        @endforeach
+                        @foreach($partners as $p)
+                            <img src="{{ asset('storage/'.$p->logo) }}"
+                                 alt="{{ $p->name }}"
+                                 class="h-14 flex-shrink-0">
+                        @endforeach
+                    </div>
+                </div>
+                @endfor
 
-        <p class="mt-6 text-indigo-200">
-            Sudah punya akun?
-            <a href="{{ route('login') }}" class="font-semibold underline">
-                Login di sini
-            </a>
-        </p>
+            </div>
+        </section>
+
     </div>
 </section>
 
