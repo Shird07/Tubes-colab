@@ -35,7 +35,6 @@
                                 type="checkbox"
                                 class="brand-checkbox accent-blue-600"
                                 value="{{ $brand }}">
-                                {{-- HAPUS "checked" agar default tidak tercentang --}}
                             {{ $brand }}
                         </label>
                     @endforeach
@@ -50,6 +49,16 @@
                             <option value="{{ $year }}">{{ $year }}</option>
                         @endforeach
                     </select>
+                </div>
+
+                {{-- TOMBOL SELECT ALL / DESELECT ALL --}}
+                <div class="mt-3 flex gap-2">
+                    <button type="button" id="selectAllBrands" class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1 rounded">
+                        Centang Semua
+                    </button>
+                    <button type="button" id="deselectAllBrands" class="bg-gray-600 hover:bg-gray-700 text-white text-sm px-3 py-1 rounded">
+                        Hapus Semua
+                    </button>
                 </div>
 
             </div>
@@ -366,8 +375,6 @@
             function updateChart() {
                 let brands = [...document.querySelectorAll('.brand-checkbox:checked')].map(cb => cb.value);
                 
-                // 🔥 PERUBAHAN: Jika tidak ada yang dicentang, KIRIM KOSONG (tampilkan semua)
-                // Controller akan handle jika brands[] kosong
                 const params = new URLSearchParams();
                 
                 if (brands.length > 0) {
@@ -389,56 +396,95 @@
                         return res.json();
                     })
                     .then(d => {
-                        console.log('Filter response received');
+                        console.log('Filter response received:', d);
                         
-                        // Update data chart
+                        // Update data chart dengan validasi data kosong
+                        // 1. Chart Brand
                         if (d.perBrand && d.perBrand.length > 0) {
                             charts.brand.data.labels = d.perBrand.map(i => i.company_name);
                             charts.brand.data.datasets[0].data = d.perBrand.map(i => i.total);
+                        } else {
+                            charts.brand.data.labels = [];
+                            charts.brand.data.datasets[0].data = [];
                         }
 
+                        // 2. Chart Year
                         if (d.perYear && d.perYear.length > 0) {
                             charts.year.data.labels = d.perYear.map(i => i.launched_year);
                             charts.year.data.datasets[0].data = d.perYear.map(i => i.total);
+                        } else {
+                            charts.year.data.labels = [];
+                            charts.year.data.datasets[0].data = [];
                         }
 
+                        // 3. Chart Average Price
                         if (d.avgPricePerBrand && d.avgPricePerBrand.length > 0) {
                             charts.avgPrice.data.labels = d.avgPricePerBrand.map(i => i.company_name);
                             charts.avgPrice.data.datasets[0].data = d.avgPricePerBrand.map(i => i.avg_price);
+                        } else {
+                            charts.avgPrice.data.labels = [];
+                            charts.avgPrice.data.datasets[0].data = [];
                         }
 
+                        // 4. Chart Price Distribution
                         if (d.priceDistribution && d.priceDistribution.length > 0) {
                             charts.priceDist.data.labels = d.priceDistribution.map(i => i.range_price);
                             charts.priceDist.data.datasets[0].data = d.priceDistribution.map(i => i.total);
+                        } else {
+                            charts.priceDist.data.labels = [];
+                            charts.priceDist.data.datasets[0].data = [];
                         }
 
+                        // 5. Chart RAM vs Price
                         if (d.ramVsPrice && d.ramVsPrice.length > 0) {
                             charts.ramPrice.data.datasets[0].data = d.ramVsPrice.map(i => ({ x: i.ram, y: i.price }));
+                        } else {
+                            charts.ramPrice.data.datasets[0].data = [];
                         }
 
+                        // 6. Chart Battery
                         if (d.avgBattery && d.avgBattery.length > 0) {
                             charts.battery.data.labels = d.avgBattery.map(i => i.company_name);
                             charts.battery.data.datasets[0].data = d.avgBattery.map(i => i.avg_battery);
+                        } else {
+                            charts.battery.data.labels = [];
+                            charts.battery.data.datasets[0].data = [];
                         }
 
+                        // 7. Chart Screen
                         if (d.screenTrend && d.screenTrend.length > 0) {
                             charts.screen.data.labels = d.screenTrend.map(i => i.launched_year);
                             charts.screen.data.datasets[0].data = d.screenTrend.map(i => i.avg_screen);
+                        } else {
+                            charts.screen.data.labels = [];
+                            charts.screen.data.datasets[0].data = [];
                         }
 
+                        // 8. Chart Processor
                         if (d.processorUsage && d.processorUsage.length > 0) {
                             charts.processor.data.labels = d.processorUsage.map(i => i.processor);
                             charts.processor.data.datasets[0].data = d.processorUsage.map(i => i.total);
+                        } else {
+                            charts.processor.data.labels = [];
+                            charts.processor.data.datasets[0].data = [];
                         }
 
+                        // 9. Chart Camera
                         if (d.cameraUsage && d.cameraUsage.length > 0) {
                             charts.camera.data.labels = d.cameraUsage.map(i => i.back_camera);
                             charts.camera.data.datasets[0].data = d.cameraUsage.map(i => i.total);
+                        } else {
+                            charts.camera.data.labels = [];
+                            charts.camera.data.datasets[0].data = [];
                         }
 
+                        // 10. Chart Flagship
                         if (d.flagshipCompare && d.flagshipCompare.length > 0) {
                             charts.flagship.data.labels = d.flagshipCompare.map(i => i.category);
                             charts.flagship.data.datasets[0].data = d.flagshipCompare.map(i => i.total);
+                        } else {
+                            charts.flagship.data.labels = [];
+                            charts.flagship.data.datasets[0].data = [];
                         }
 
                         // Update semua chart
@@ -446,6 +492,7 @@
                     })
                     .catch(error => {
                         console.error('Error fetching filter data:', error);
+                        alert('Terjadi kesalahan saat memuat data filter. Silakan coba lagi.');
                     });
             }
 
@@ -459,22 +506,7 @@
                 yearFilterElement.addEventListener('change', updateChart);
             }
 
-            // 🔥 TAMBAHKAN "Select All" / "Deselect All" BUTTON (OPSIONAL)
-            const filterContainer = document.querySelector('.bg-gray-800.p-4.rounded');
-            const buttonHTML = `
-                <div class="mt-3 flex gap-2">
-                    <button type="button" id="selectAllBrands" class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1 rounded">
-                        Centang Semua
-                    </button>
-                    <button type="button" id="deselectAllBrands" class="bg-gray-600 hover:bg-gray-700 text-white text-sm px-3 py-1 rounded">
-                        Hapus Semua
-                    </button>
-                </div>
-            `;
-            
-            filterContainer.insertAdjacentHTML('beforeend', buttonHTML);
-
-            // Event listener untuk tombol
+            // Event listener untuk tombol Select All / Deselect All
             document.getElementById('selectAllBrands').addEventListener('click', function() {
                 document.querySelectorAll('.brand-checkbox').forEach(cb => {
                     cb.checked = true;
@@ -493,5 +525,3 @@
         });
     </script>
 </x-app-layout>
-
-<!-- baby -->

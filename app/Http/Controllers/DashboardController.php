@@ -40,7 +40,7 @@ class DashboardController extends Controller
             ->orderBy('launched_year')
             ->get();
 
-        // 3️⃣ Distribusi Harga Smartphone - PERBAIKI QUERY
+        // 3️⃣ Distribusi Harga Smartphone
         $priceDistribution = (clone $baseQuery)
             ->selectRaw("
                 CASE
@@ -54,7 +54,7 @@ class DashboardController extends Controller
             ->groupBy('range_price')
             ->get();
 
-        // 4️⃣ Rata-rata Harga per Brand - PERBAIKI QUERY
+        // 4️⃣ Rata-rata Harga per Brand
         $avgPricePerBrand = (clone $baseQuery)
             ->select(
                 'company_name',
@@ -63,7 +63,7 @@ class DashboardController extends Controller
             ->groupBy('company_name')
             ->get();
 
-        // 5️⃣ RAM vs Harga - PERBAIKI QUERY
+        // 5️⃣ RAM vs Harga
         $ramVsPrice = (clone $baseQuery)
             ->select(
                 DB::raw("CAST(REPLACE(ram, 'GB', '') AS UNSIGNED) as ram"),
@@ -108,7 +108,7 @@ class DashboardController extends Controller
             ->limit(10)
             ->get();
 
-        // 🔟 Flagship vs Non-Flagship - PERBAIKI QUERY
+        // 🔟 Flagship vs Non-Flagship
         $flagshipCompare = (clone $baseQuery)
             ->selectRaw("
                 CASE
@@ -148,26 +148,27 @@ class DashboardController extends Controller
             $baseQuery->whereIn('company_name', $request->brands);
         }
 
-        // 🔥 FILTER TAHUN
+        // 🔥 FILTER TAHUN - HARUS DITERAPKAN DI SEMUA QUERY
         if ($request->filled('year')) {
-            $baseQuery->where('launched_year', $request->year);
+            $year = $request->year;
+            $baseQuery->where('launched_year', $year);
         }
 
-        // 1️⃣ Jumlah Smartphone per Brand
+        // 1️⃣ Jumlah Smartphone per Brand - SUDAH TERFILTER
         $perBrand = (clone $baseQuery)
             ->select('company_name', DB::raw('COUNT(*) as total'))
             ->groupBy('company_name')
             ->orderBy('total', 'desc')
             ->get();
 
-        // 2️⃣ Jumlah Smartphone per Tahun
+        // 2️⃣ Jumlah Smartphone per Tahun - SUDAH TERFILTER
         $perYear = (clone $baseQuery)
             ->select('launched_year', DB::raw('COUNT(*) as total'))
             ->groupBy('launched_year')
             ->orderBy('launched_year')
             ->get();
 
-        // 3️⃣ Distribusi Harga Smartphone - PERBAIKI QUERY
+        // 3️⃣ Distribusi Harga Smartphone - TERFILTER
         $priceDistribution = (clone $baseQuery)
             ->selectRaw("
                 CASE
@@ -181,7 +182,7 @@ class DashboardController extends Controller
             ->groupBy('range_price')
             ->get();
 
-        // 4️⃣ Rata-rata Harga per Brand - PERBAIKI QUERY
+        // 4️⃣ Rata-rata Harga per Brand - TERFILTER
         $avgPricePerBrand = (clone $baseQuery)
             ->select(
                 'company_name',
@@ -190,7 +191,7 @@ class DashboardController extends Controller
             ->groupBy('company_name')
             ->get();
 
-        // 5️⃣ RAM vs Harga - PERBAIKI QUERY
+        // 5️⃣ RAM vs Harga - TERFILTER
         $ramVsPrice = (clone $baseQuery)
             ->select(
                 DB::raw("CAST(REPLACE(ram, 'GB', '') AS UNSIGNED) as ram"),
@@ -200,7 +201,7 @@ class DashboardController extends Controller
             ->whereNotNull('price_usa')
             ->get();
 
-        // 6️⃣ Rata-rata Baterai per Brand
+        // 6️⃣ Rata-rata Baterai per Brand - TERFILTER
         $avgBattery = (clone $baseQuery)
             ->select(
                 'company_name',
@@ -209,7 +210,7 @@ class DashboardController extends Controller
             ->groupBy('company_name')
             ->get();
 
-        // 7️⃣ Ukuran Layar vs Tahun Rilis
+        // 7️⃣ Ukuran Layar vs Tahun Rilis - TERFILTER
         $screenTrend = (clone $baseQuery)
             ->select(
                 'launched_year',
@@ -219,7 +220,7 @@ class DashboardController extends Controller
             ->orderBy('launched_year')
             ->get();
 
-        // 8️⃣ Processor Usage
+        // 8️⃣ Processor Usage - TERFILTER
         $processorUsage = (clone $baseQuery)
             ->select('processor', DB::raw('COUNT(*) as total'))
             ->groupBy('processor')
@@ -227,7 +228,7 @@ class DashboardController extends Controller
             ->limit(10)
             ->get();
 
-        // 9️⃣ Kamera Belakang Dominan
+        // 9️⃣ Kamera Belakang Dominan - TERFILTER
         $cameraUsage = (clone $baseQuery)
             ->select('back_camera', DB::raw('COUNT(*) as total'))
             ->groupBy('back_camera')
@@ -235,7 +236,7 @@ class DashboardController extends Controller
             ->limit(10)
             ->get();
 
-        // 🔟 Flagship vs Non-Flagship - PERBAIKI QUERY
+        // 🔟 Flagship vs Non-Flagship - TERFILTER
         $flagshipCompare = (clone $baseQuery)
             ->selectRaw("
                 CASE
@@ -262,5 +263,3 @@ class DashboardController extends Controller
         ]);
     }
 }
-
-// Baby

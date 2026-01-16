@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Smartphone;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Log;
 
 class SmartphoneController extends Controller
 {
@@ -18,70 +19,124 @@ class SmartphoneController extends Controller
         $yearFilter = $request->year;
         $ramFilter = $request->ram;
 
-        // Query dengan semua filter
-        $smartphones = Smartphone::when($search, function ($query, $search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('model_name', 'LIKE', "%{$search}%")
-                  ->orWhere('company_name', 'LIKE', "%{$search}%")
-                  ->orWhere('processor', 'LIKE', "%{$search}%")
-                  ->orWhere('ram', 'LIKE', "%{$search}%")
-                  ->orWhere('price_usa', 'LIKE', "%{$search}%");
-            });
-        })
-        ->when($brandFilter, function ($query, $brandFilter) {
-            $query->where('company_name', $brandFilter);
-        })
-        ->when($yearFilter, function ($query, $yearFilter) {
-            $query->where('launched_year', $yearFilter);
-        })
-        ->when($ramFilter, function ($query, $ramFilter) {
-            $query->where('ram', 'LIKE', "%{$ramFilter}GB%");
-        })
-        ->orderBy('id', 'desc')
-        ->paginate(10)
-        ->withQueryString();
+        // 🔥 PERBAIKAN: BUAT 2 QUERY TERPISAH
+        // 1. Untuk pagination (tampilan tabel)
+        // 2. Untuk statistik (perhitungan total, avg, dll)
 
-        // ========== DATA UNTUK STATS CARDS ==========
-        // Total brand unik (dari semua data)
-        $brandsCount = Smartphone::distinct('company_name')->count('company_name');
-        
-        // Rata-rata harga (handle berbagai format: $999, USD $999, dll)
-        $avgPrice = 0;
-        $prices = Smartphone::pluck('price_usa');
-        $validPrices = $prices->filter(function($price) {
-            return is_numeric(preg_replace('/[^0-9.]/', '', $price));
-        });
-        
-        if ($validPrices->count() > 0) {
-            $avgPrice = $validPrices->avg(function($price) {
-                return floatval(preg_replace('/[^0-9.]/', '', $price));
-            });
+        // 🔵 QUERY UNTUK PAGINATION (TABEL)
+        $paginationQuery = Smartphone::query();
+
+        // Terapkan filter ke query pagination
+        $this->applyFilters($paginationQuery, $search, $brandFilter, $yearFilter, $ramFilter);
+
+        // Pagination untuk tabel
+        $smartphones = $paginationQuery->orderBy('id', 'desc')->paginate(10)->withQueryString();
+
+        // 🔥 DEBUG: Log query dan hasil
+        if ($search) {
+            Log::info('Search Results Debug:', [
+                'search_term' => $search,
+                'total_results' => $smartphones->total(),
+                'sql_query' => $paginationQuery->toSql(),
+                'bindings' => $paginationQuery->getBindings()
+            ]);
         }
+
+        // 🔴 QUERY TERPISAH UNTUK STATISTIK (SEMUA DATA TERFILTER)
+        $statsQuery = Smartphone::query();
         
-        // Tahun terbaru
-        $latestYear = Smartphone::max('launched_year');
+        // Terapkan filter yang sama ke query statistik
+        $this->applyFilters($statsQuery, $search, $brandFilter, $yearFilter, $ramFilter);
+
+        // ========== HITUNG STATISTIK DARI SEMUA DATA TERFILTER ==========
+        $totalFiltered = $statsQuery->count();
+
+        $brandsCount = 0;
+        $avgPrice = 0;
+        $latestYear = date('Y');
         
+        if ($totalFiltered > 0) {
+            // Hitung jumlah brand unik dari semua data terfilter
+            $brandsCount = $statsQuery->distinct()->count('company_name');
+            
+            // Hitung rata-rata harga dari semua data terfilter
+            $prices = $statsQuery->pluck('price_usa');
+            
+            $validPrices = $prices->filter(function($price) {
+                // Cari angka dalam string (misal: "USD 699", "$699", "699")
+                preg_match('/\d+(\.\d+)?/', (string)$price, $matches);
+                return !empty($matches);
+            });
+            
+            if ($validPrices->count() > 0) {
+                $avgPrice = $validPrices->avg(function($price) {
+                    preg_match('/\d+(\.\d+)?/', (string)$price, $matches);
+                    return floatval($matches[0]);
+                });
+            }
+            
+            // Ambil tahun terbaru dari semua data terfilter
+            $latestYear = $statsQuery->max('launched_year');
+        }
+
         // ========== DATA UNTUK DROPDOWN FILTER ==========
-        // Daftar brand unik untuk filter
-        $brandsList = Smartphone::distinct('company_name')
+        // Query terpisah untuk dropdown (seluruh database)
+        $brandsList = Smartphone::distinct()
             ->whereNotNull('company_name')
             ->orderBy('company_name')
             ->pluck('company_name');
         
-        // Daftar tahun unik untuk filter
-        $yearsList = Smartphone::distinct('launched_year')
+        $yearsList = Smartphone::distinct()
             ->whereNotNull('launched_year')
             ->orderBy('launched_year', 'desc')
             ->pluck('launched_year');
 
-        return view('smartphones.index', compact(
-            'smartphones',
-            'brandsCount',
-            'avgPrice',
-            'latestYear',
-            'brandsList',
-            'yearsList'
-        ));
+        return view('smartphones.index', [
+            'smartphones' => $smartphones,
+            'total' => $totalFiltered,
+            'brandsCount' => $brandsCount,
+            'avgPrice' => round($avgPrice),
+            'latestYear' => $latestYear,
+            'brandsList' => $brandsList,
+            'yearsList' => $yearsList,
+        ]);
+    }
+
+    /**
+     * Helper function untuk menerapkan filter ke query
+     */
+    private function applyFilters($query, $search, $brandFilter, $yearFilter, $ramFilter)
+    {
+        if ($search) {
+            $query->where(function ($query) use ($search) {
+                $query->where('model_name', 'LIKE', "%{$search}%")
+                      ->orWhere('company_name', 'LIKE', "%{$search}%")
+                      ->orWhere('processor', 'LIKE', "%{$search}%")
+                      ->orWhere('ram', 'LIKE', "%{$search}%")
+                      ->orWhere('price_usa', 'LIKE', "%{$search}%")
+                      ->orWhere('launched_year', 'LIKE', "%{$search}%")
+                      ->orWhere('mobile_weight', 'LIKE', "%{$search}%")
+                      ->orWhere('front_camera', 'LIKE', "%{$search}%")
+                      ->orWhere('back_camera', 'LIKE', "%{$search}%")
+                      ->orWhere('battery_capacity', 'LIKE', "%{$search}%")
+                      ->orWhere('screen_size', 'LIKE', "%{$search}%");
+            });
+        }
+
+        if ($brandFilter) {
+            $query->where('company_name', $brandFilter);
+        }
+
+        if ($yearFilter) {
+            $query->where('launched_year', $yearFilter);
+        }
+
+        if ($ramFilter) {
+            $query->where(function ($query) use ($ramFilter) {
+                $query->where('ram', $ramFilter)
+                      ->orWhere('ram', 'LIKE', "%{$ramFilter}%");
+            });
+        }
     }
 
     // ===============================
@@ -284,4 +339,3 @@ class SmartphoneController extends Controller
         return Excel::download($export, $filename);
     }
 }
-//end controllerexel
