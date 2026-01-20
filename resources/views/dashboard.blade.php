@@ -20,14 +20,13 @@
                 </div>
             </div>
 
-            {{-- ================= FILTER DATA (RAPI & TIDAK BERLEBIHAN) ================= --}}
+            {{-- ================= FILTER DATA ================= --}}
             <div class="bg-gray-800 p-4 rounded text-white">
-
                 <p class="text-sm text-gray-400 mb-3">
                     Filter Brand & Tahun
                 </p>
 
-                {{-- BRAND CHECKBOX (AUTO PINDAH BARIS, TIDAK KE SAMPING TERUS) --}}
+                {{-- BRAND CHECKBOX --}}
                 <div class="flex flex-wrap gap-x-4 gap-y-2 mb-4">
                     @foreach ($brands as $brand)
                         <label class="flex items-center gap-2 text-sm whitespace-nowrap">
@@ -60,12 +59,11 @@
                         Hapus Semua
                     </button>
                 </div>
-
             </div>
 
             {{-- ================= CHART GRID ================= --}}
             <div class="space-y-6">
-
+                {{-- 1. Jumlah Smartphone per Brand --}}
                 <div class="bg-gray-800 p-6 rounded text-white">
                     <h3 class="text-lg font-semibold mb-4">
                         Jumlah Smartphone per Brand
@@ -73,6 +71,7 @@
                     <canvas id="chartBrand"></canvas>
                 </div>
 
+                {{-- 2. Jumlah Smartphone per Tahun --}}
                 <div class="bg-gray-800 p-6 rounded text-white">
                     <h3 class="text-lg font-semibold mb-4">
                         Jumlah Smartphone per Tahun
@@ -80,6 +79,7 @@
                     <canvas id="chartYear"></canvas>
                 </div>
 
+                {{-- 3. Rata-rata Harga Smartphone per Brand --}}
                 <div class="bg-gray-800 p-6 rounded text-white">
                     <h3 class="text-lg font-semibold mb-4">
                         Rata-rata Harga Smartphone per Brand
@@ -87,20 +87,7 @@
                     <canvas id="chartAvgPrice"></canvas>
                 </div>
 
-                <div class="bg-gray-800 p-6 rounded text-white">
-                    <h3 class="text-lg font-semibold mb-4">
-                        Distribusi Harga Smartphone
-                    </h3>
-                    <canvas id="chartPriceDist"></canvas>
-                </div>
-
-                <div class="bg-gray-800 p-6 rounded text-white">
-                    <h3 class="text-lg font-semibold mb-4">
-                        Hubungan RAM dengan Harga
-                    </h3>
-                    <canvas id="chartRamPrice"></canvas>
-                </div>
-
+                {{-- 4. Rata-rata Kapasitas Baterai per Brand --}}
                 <div class="bg-gray-800 p-6 rounded text-white">
                     <h3 class="text-lg font-semibold mb-4">
                         Rata-rata Kapasitas Baterai per Brand
@@ -108,13 +95,7 @@
                     <canvas id="chartBattery"></canvas>
                 </div>
 
-                <div class="bg-gray-800 p-6 rounded text-white">
-                    <h3 class="text-lg font-semibold mb-4">
-                        Tren Ukuran Layar per Tahun
-                    </h3>
-                    <canvas id="chartScreen"></canvas>
-                </div>
-
+                {{-- 5. Processor yang Paling Banyak Digunakan --}}
                 <div class="bg-gray-800 p-6 rounded text-white">
                     <h3 class="text-lg font-semibold mb-4">
                         Processor yang Paling Banyak Digunakan
@@ -122,6 +103,7 @@
                     <canvas id="chartProcessor"></canvas>
                 </div>
 
+                {{-- 6. Resolusi Kamera Belakang Dominan --}}
                 <div class="bg-gray-800 p-6 rounded text-white">
                     <h3 class="text-lg font-semibold mb-4">
                         Resolusi Kamera Belakang Dominan
@@ -129,13 +111,13 @@
                     <canvas id="chartCamera"></canvas>
                 </div>
 
+                {{-- 7. Perbandingan Flagship vs Non-Flagship --}}
                 <div class="bg-gray-800 p-6 rounded text-white">
                     <h3 class="text-lg font-semibold mb-4">
                         Perbandingan Flagship vs Non-Flagship
                     </h3>
                     <canvas id="chartFlagship"></canvas>
                 </div>
-
             </div>
         </div>
     </div>
@@ -171,22 +153,20 @@
                 }
             }
 
-            // 🔥 DATA AWAL DARI PHP (SEMUA DATA)
+            // 🔥 DATA AWAL DARI PHP (HANYA YANG DIBUTUHKAN)
             const initialData = {
                 perBrand: @json($perBrand),
                 perYear: @json($perYear),
-                priceDistribution: @json($priceDistribution),
                 avgPricePerBrand: @json($avgPricePerBrand),
-                ramVsPrice: @json($ramVsPrice),
                 avgBattery: @json($avgBattery),
-                screenTrend: @json($screenTrend),
                 processorUsage: @json($processorUsage),
                 cameraUsage: @json($cameraUsage),
                 flagshipCompare: @json($flagshipCompare),
             };
 
-            // 🔥 INISIALISASI CHART DENGAN SEMUA DATA
+            // 🔥 INISIALISASI CHART (HANYA YANG DIBUTUHKAN)
             const charts = {
+                // 1. Chart Brand
                 brand: new Chart(document.getElementById('chartBrand'), {
                     type: 'bar',
                     data: {
@@ -200,6 +180,7 @@
                     options: baseOptions()
                 }),
 
+                // 2. Chart Year
                 year: new Chart(document.getElementById('chartYear'), {
                     type: 'line',
                     data: {
@@ -217,6 +198,7 @@
                     }
                 }),
 
+                // 3. Chart Average Price
                 avgPrice: new Chart(document.getElementById('chartAvgPrice'), {
                     type: 'bar',
                     data: {
@@ -230,60 +212,7 @@
                     options: baseOptions(v => '$' + Math.round(v))
                 }),
 
-                priceDist: new Chart(document.getElementById('chartPriceDist'), {
-                    type: 'bar',
-                    data: {
-                        labels: initialData.priceDistribution.map(i => i.range_price),
-                        datasets: [{
-                            label: 'Jumlah',
-                            data: initialData.priceDistribution.map(i => i.total),
-                            backgroundColor: '#8b5cf6'
-                        }]
-                    },
-                    options: baseOptions()
-                }),
-
-                ramPrice: new Chart(document.getElementById('chartRamPrice'), {
-                    type: 'scatter',
-                    data: {
-                        datasets: [{
-                            label: 'RAM vs Harga',
-                            data: initialData.ramVsPrice.map(i => ({
-                                x: i.ram,
-                                y: i.price
-                            })),
-                            backgroundColor: '#ec4899',
-                            pointRadius: 5
-                        }]
-                    },
-                    options: {
-                        plugins: {
-                            legend: { labels: { color: 'white' } },
-                            datalabels: { display: false }
-                        },
-                        scales: {
-                            x: {
-                                ticks: { color: 'white' },
-                                title: { 
-                                    display: true, 
-                                    text: 'RAM (GB)', 
-                                    color: 'white',
-                                    font: { size: 14 }
-                                }
-                            },
-                            y: {
-                                ticks: { color: 'white' },
-                                title: { 
-                                    display: true, 
-                                    text: 'Harga (USD)', 
-                                    color: 'white',
-                                    font: { size: 14 }
-                                }
-                            }
-                        }
-                    }
-                }),
-
+                // 4. Chart Battery
                 battery: new Chart(document.getElementById('chartBattery'), {
                     type: 'bar',
                     data: {
@@ -297,23 +226,7 @@
                     options: baseOptions(v => Math.round(v) + ' mAh')
                 }),
 
-                screen: new Chart(document.getElementById('chartScreen'), {
-                    type: 'line',
-                    data: {
-                        labels: initialData.screenTrend.map(i => i.launched_year),
-                        datasets: [{
-                            label: 'Inch',
-                            data: initialData.screenTrend.map(i => i.avg_screen),
-                            borderColor: '#0ea5e9',
-                            tension: 0.4
-                        }]
-                    },
-                    options: {
-                        ...baseOptions(v => v.toFixed(1) + '"'),
-                        plugins: { datalabels: { display: false } }
-                    }
-                }),
-
+                // 5. Chart Processor (HORIZONTAL)
                 processor: new Chart(document.getElementById('chartProcessor'), {
                     type: 'bar',
                     data: {
@@ -324,9 +237,37 @@
                             backgroundColor: '#f97316'
                         }]
                     },
-                    options: baseOptions()
+                    options: {
+                        indexAxis: 'y', // Horizontal chart
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                labels: { color: 'white' }
+                            },
+                            datalabels: {
+                                color: 'white',
+                                anchor: 'end',
+                                align: 'right',
+                                font: { weight: 'bold' }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                ticks: { color: 'white' }
+                            },
+                            y: {
+                                ticks: {
+                                    color: 'white',
+                                    autoSkip: false
+                                }
+                            }
+                        }
+                    }
                 }),
 
+                // 6. Chart Camera
                 camera: new Chart(document.getElementById('chartCamera'), {
                     type: 'bar',
                     data: {
@@ -340,6 +281,7 @@
                     options: baseOptions()
                 }),
 
+                // 7. Chart Flagship
                 flagship: new Chart(document.getElementById('chartFlagship'), {
                     type: 'pie',
                     data: {
@@ -398,8 +340,7 @@
                     .then(d => {
                         console.log('Filter response received:', d);
                         
-                        // Update data chart dengan validasi data kosong
-                        // 1. Chart Brand
+                        // 1. Update Chart Brand
                         if (d.perBrand && d.perBrand.length > 0) {
                             charts.brand.data.labels = d.perBrand.map(i => i.company_name);
                             charts.brand.data.datasets[0].data = d.perBrand.map(i => i.total);
@@ -408,7 +349,7 @@
                             charts.brand.data.datasets[0].data = [];
                         }
 
-                        // 2. Chart Year
+                        // 2. Update Chart Year
                         if (d.perYear && d.perYear.length > 0) {
                             charts.year.data.labels = d.perYear.map(i => i.launched_year);
                             charts.year.data.datasets[0].data = d.perYear.map(i => i.total);
@@ -417,7 +358,7 @@
                             charts.year.data.datasets[0].data = [];
                         }
 
-                        // 3. Chart Average Price
+                        // 3. Update Chart Average Price
                         if (d.avgPricePerBrand && d.avgPricePerBrand.length > 0) {
                             charts.avgPrice.data.labels = d.avgPricePerBrand.map(i => i.company_name);
                             charts.avgPrice.data.datasets[0].data = d.avgPricePerBrand.map(i => i.avg_price);
@@ -426,23 +367,7 @@
                             charts.avgPrice.data.datasets[0].data = [];
                         }
 
-                        // 4. Chart Price Distribution
-                        if (d.priceDistribution && d.priceDistribution.length > 0) {
-                            charts.priceDist.data.labels = d.priceDistribution.map(i => i.range_price);
-                            charts.priceDist.data.datasets[0].data = d.priceDistribution.map(i => i.total);
-                        } else {
-                            charts.priceDist.data.labels = [];
-                            charts.priceDist.data.datasets[0].data = [];
-                        }
-
-                        // 5. Chart RAM vs Price
-                        if (d.ramVsPrice && d.ramVsPrice.length > 0) {
-                            charts.ramPrice.data.datasets[0].data = d.ramVsPrice.map(i => ({ x: i.ram, y: i.price }));
-                        } else {
-                            charts.ramPrice.data.datasets[0].data = [];
-                        }
-
-                        // 6. Chart Battery
+                        // 4. Update Chart Battery
                         if (d.avgBattery && d.avgBattery.length > 0) {
                             charts.battery.data.labels = d.avgBattery.map(i => i.company_name);
                             charts.battery.data.datasets[0].data = d.avgBattery.map(i => i.avg_battery);
@@ -451,16 +376,7 @@
                             charts.battery.data.datasets[0].data = [];
                         }
 
-                        // 7. Chart Screen
-                        if (d.screenTrend && d.screenTrend.length > 0) {
-                            charts.screen.data.labels = d.screenTrend.map(i => i.launched_year);
-                            charts.screen.data.datasets[0].data = d.screenTrend.map(i => i.avg_screen);
-                        } else {
-                            charts.screen.data.labels = [];
-                            charts.screen.data.datasets[0].data = [];
-                        }
-
-                        // 8. Chart Processor
+                        // 5. Update Chart Processor
                         if (d.processorUsage && d.processorUsage.length > 0) {
                             charts.processor.data.labels = d.processorUsage.map(i => i.processor);
                             charts.processor.data.datasets[0].data = d.processorUsage.map(i => i.total);
@@ -469,7 +385,7 @@
                             charts.processor.data.datasets[0].data = [];
                         }
 
-                        // 9. Chart Camera
+                        // 6. Update Chart Camera
                         if (d.cameraUsage && d.cameraUsage.length > 0) {
                             charts.camera.data.labels = d.cameraUsage.map(i => i.back_camera);
                             charts.camera.data.datasets[0].data = d.cameraUsage.map(i => i.total);
@@ -478,7 +394,7 @@
                             charts.camera.data.datasets[0].data = [];
                         }
 
-                        // 10. Chart Flagship
+                        // 7. Update Chart Flagship
                         if (d.flagshipCompare && d.flagshipCompare.length > 0) {
                             charts.flagship.data.labels = d.flagshipCompare.map(i => i.category);
                             charts.flagship.data.datasets[0].data = d.flagshipCompare.map(i => i.total);
